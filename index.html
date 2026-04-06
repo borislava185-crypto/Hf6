@@ -136,7 +136,7 @@ display:flex;align-items:center;justify-content:space-between;z-index:5;font-siz
 .cdot{width:6px;height:6px;border-radius:50%;background:var(–red);animation:bl 1s infinite}
 .cdot.on{background:var(–green)}
 #uv{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}
-#hcvs{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;transform:scaleX(-1)}
+#hcvs{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;}
 .cov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
 justify-content:center;background:rgba(18,15,30,.92);z-index:4;gap:.8rem}
 .cov.hidden{display:none}
@@ -492,27 +492,28 @@ function classify(hands,type){
 
 function drawOv(){
   const hc=document.getElementById('hcvs'),v=document.getElementById('uv');
-  hc.width=v.videoWidth||640;hc.height=v.videoHeight||480;
+  hc.width=v.videoWidth||320;hc.height=v.videoHeight||240;
   const c=hc.getContext('2d');c.clearRect(0,0,hc.width,hc.height);
   if(!lastLM||!lastLM.length)return;
   const W=hc.width,H=hc.height;
-  // Both video and canvas are CSS scaleX(-1), so draw at (1-x)*W to align
+  // Video is CSS flipped (scaleX -1). Canvas has no CSS flip.
+  // MediaPipe gives x=0 on left of RAW frame (right side of mirrored view).
+  // To match the mirrored video: draw at (1 - p.x) * W
   const px=p=>(1-p.x)*W, py=p=>p.y*H;
   const CONN=[[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,11],[11,12],
    [0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20],[5,9],[9,13],[13,17]];
   const colors=['rgba(46,204,113,.95)','rgba(100,180,255,.95)'];
   lastLM.forEach((hand,hi)=>{
-    c.strokeStyle=colors[hi]||colors[0]; c.lineWidth=3;
+    c.lineWidth=3; c.strokeStyle=colors[hi%2];
     CONN.forEach(([a,b])=>{
       c.beginPath();c.moveTo(px(hand[a]),py(hand[a]));c.lineTo(px(hand[b]),py(hand[b]));c.stroke();
     });
     hand.forEach((p,i)=>{
       c.beginPath();c.arc(px(p),py(p),i===0?8:5,0,Math.PI*2);
-      c.fillStyle=colors[hi]||colors[0];c.fill();
-      c.strokeStyle='rgba(255,255,255,.6)';c.lineWidth=2;c.stroke();
+      c.fillStyle=colors[hi%2];c.fill();
+      c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=2;c.stroke();
     });
   });
-  // Hold progress ring on wrist of first hand
   if(holdCnt>0&&lastLM[0]&&lastLM[0][0]){
     const p=lastLM[0][0];
     c.beginPath();c.arc(px(p),py(p),34,-Math.PI/2,-Math.PI/2+(holdCnt/HOLD)*Math.PI*2);

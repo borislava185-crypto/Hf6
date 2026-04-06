@@ -136,7 +136,7 @@ display:flex;align-items:center;justify-content:space-between;z-index:5;font-siz
 .cdot{width:6px;height:6px;border-radius:50%;background:var(–red);animation:bl 1s infinite}
 .cdot.on{background:var(–green)}
 #uv{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}
-#hcvs{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;}
+#hcvs{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;transform:scaleX(-1)}
 .cov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
 justify-content:center;background:rgba(18,15,30,.92);z-index:4;gap:.8rem}
 .cov.hidden{display:none}
@@ -400,7 +400,7 @@ function ariaMsg(text, type='norm') {
 // ═══════════════════════════════════════════
 // MEDIAPIPE
 // ═══════════════════════════════════════════
-let mpH=null, lastLM=null, detActive=false, holdCnt=0;
+let mpH=null, lastLM=[], detActive=false, holdCnt=0;
 const HOLD=12;
 let wrongTimer=null;
 
@@ -413,9 +413,8 @@ async function startCam(){
     document.getElementById('cd').classList.add('on');
     document.getElementById('so').classList.add('on');
     mpH=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-    mpH.setOptions({maxNumHands:1,modelComplexity:0,minDetectionConfidence:0.6,minTrackingConfidence:0.5});
+    mpH.setOptions({maxNumHands:2,modelComplexity:0,minDetectionConfidence:0.6,minTrackingConfidence:0.5});
     mpH.onResults(onHands);
-    // Throttle to every other frame to prevent freezing on mobile
     let frameCount=0;
     const cam=new Camera(vid,{onFrame:async()=>{
       frameCount++;
@@ -429,35 +428,48 @@ async function startCam(){
 
 function onHands(res){
   if(!detActive)return;
-  if(!res.multiHandLandmarks||!res.multiHandLandmarks.length){lastLM=null;holdCnt=0;detUI('No hands visible',0);return;}
-  const lm=res.multiHandLandmarks[0];lastLM=lm;
-  const{det,conf}=classify(lm,SIGNS[step].detect);
+  if(!res.multiHandLandmarks||!res.multiHandLandmarks.length){
+    lastLM=[];holdCnt=0;detUI('No hands visible',0);return;
+  }
+  lastLM=res.multiHandLandmarks; // array of hands
+  const{det,conf}=classify(lastLM,SIGNS[step].detect);
   detUI(det?SIGNS[step].word:'Signing…',conf);
   if(det&&conf>0.5){holdCnt++;if(holdCnt>=HOLD){holdCnt=0;doCorrect();}}
   else holdCnt=0;
 }
 
-function classify(lm,type){
+function classify(hands,type){
+  if(!hands||!hands.length)return{det:false,conf:0};
+  const lm=hands[0]; // primary hand
+  const lm2=hands[1]||null; // second hand if present
   if(type==='salute'){
-    // Flat open hand raised to head level (wrist high in frame, fingers extended upward)
+    // Flat open hand raised high to head/temple level
     const iU=lm[8].y<lm[5].y-0.04, mU=lm[12].y<lm[9].y-0.04;
     const rU=lm[16].y<lm[13].y-0.04, pU=lm[20].y<lm[17].y-0.04;
     const tO=Math.abs(lm[4].x-lm[0].x)>0.03;
-    // Hand raised high — wrist in upper third of frame
     const raised=lm[0].y<0.45;
     const ext=[iU,mU,rU,pU].filter(Boolean).length;
-    return{det:ext>=3&&tO&&raised, conf:Math.min((ext/4)*0.5+(tO?0.15:0)+(raised?0.35:0),1)};
+    return{det:ext>=3&&tO&&raised,conf:Math.min((ext/4)*0.5+(tO?0.15:0)+(raised?0.35:0),1)};
   }
   if(type==='chest_out'){
-    // Thumbs up shape — used as finish position detector
-    // Both hands ideally but MediaPipe gives one — detect thumb up with fingers curled
-    const tU=lm[4].y<lm[3].y-0.04;
-    const iC=lm[8].y>lm[5].y-0.01, mC=lm[12].y>lm[9].y-0.01;
-    const rC=lm[16].y>lm[13].y-0.01, pC=lm[20].y>lm[17].y-0.01;
-    const curled=[iC,mC,rC,pC].filter(Boolean).length;
-    // Hand should be at mid-frame or lower (chest/outward position)
-    const midLevel=lm[0].y>0.3;
-    return{det:tU&&curled>=3&&midLevel, conf:(tU?0.45:0)+(curled/4)*0.4+(midLevel?0.15:0)};
+    // Both hands needed: check each hand for thumbs-up finish position
+    // If two hands detected, check both end in thumbs-up
+    const thumbUp=(h)=>{
+      const tU=h[4].y<h[3].y-0.03;
+      const iC=h[8].y>h[5].y-0.01,mC=h[12].y>h[9].y-0.01;
+      const rC=h[16].y>h[13].y-0.01,pC=h[20].y>h[17].y-0.01;
+      const c=[iC,mC,rC,pC].filter(Boolean).length;
+      return{up:tU&&c>=3,conf:(tU?0.45:0)+(c/4)*0.4};
+    };
+    const h1=thumbUp(lm);
+    if(lm2){
+      const h2=thumbUp(lm2);
+      // Both hands thumbs up = strong match
+      const conf=(h1.conf+h2.conf)/2+(h1.up&&h2.up?0.15:0);
+      return{det:h1.up&&h2.up,conf:Math.min(conf,1)};
+    }
+    // Single hand fallback
+    return{det:h1.up,conf:Math.min(h1.conf+0.1,1)};
   }
   return{det:false,conf:0};
 }
@@ -466,23 +478,28 @@ function drawOv(){
   const hc=document.getElementById('hcvs'),v=document.getElementById('uv');
   hc.width=v.videoWidth||640;hc.height=v.videoHeight||480;
   const c=hc.getContext('2d');c.clearRect(0,0,hc.width,hc.height);
-  if(!lastLM)return;
+  if(!lastLM||!lastLM.length)return;
   const W=hc.width,H=hc.height;
-  // Canvas is also CSS-flipped (scaleX -1) to match the mirrored video
-  // So we draw at p.x * W directly — both flip together = correct alignment
-  const px=p=>p.x*W, py=p=>p.y*H;
-  [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,11],[11,12],
-   [0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20],[5,9],[9,13],[13,17]].forEach(([a,b])=>{
-    c.beginPath();c.moveTo(px(lastLM[a]),py(lastLM[a]));c.lineTo(px(lastLM[b]),py(lastLM[b]));
-    c.strokeStyle='rgba(46,204,113,.9)';c.lineWidth=3;c.stroke();
+  // Both video and canvas are CSS scaleX(-1), so draw at (1-x)*W to align
+  const px=p=>(1-p.x)*W, py=p=>p.y*H;
+  const CONN=[[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,11],[11,12],
+   [0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20],[5,9],[9,13],[13,17]];
+  const colors=['rgba(46,204,113,.95)','rgba(100,180,255,.95)'];
+  lastLM.forEach((hand,hi)=>{
+    c.strokeStyle=colors[hi]||colors[0]; c.lineWidth=3;
+    CONN.forEach(([a,b])=>{
+      c.beginPath();c.moveTo(px(hand[a]),py(hand[a]));c.lineTo(px(hand[b]),py(hand[b]));c.stroke();
+    });
+    hand.forEach((p,i)=>{
+      c.beginPath();c.arc(px(p),py(p),i===0?8:5,0,Math.PI*2);
+      c.fillStyle=colors[hi]||colors[0];c.fill();
+      c.strokeStyle='rgba(255,255,255,.6)';c.lineWidth=2;c.stroke();
+    });
   });
-  lastLM.forEach((p,i)=>{
-    c.beginPath();c.arc(px(p),py(p),i?5:7,0,Math.PI*2);
-    c.fillStyle=i?'rgba(100,180,255,.9)':'rgba(46,204,113,1)';c.fill();
-    c.strokeStyle='rgba(255,255,255,.4)';c.lineWidth=1.5;c.stroke();
-  });
-  if(holdCnt>0&&lastLM[0]){
-    c.beginPath();c.arc(px(lastLM[0]),py(lastLM[0]),30,-Math.PI/2,-Math.PI/2+(holdCnt/HOLD)*Math.PI*2);
+  // Hold progress ring on wrist of first hand
+  if(holdCnt>0&&lastLM[0]&&lastLM[0][0]){
+    const p=lastLM[0][0];
+    c.beginPath();c.arc(px(p),py(p),34,-Math.PI/2,-Math.PI/2+(holdCnt/HOLD)*Math.PI*2);
     c.strokeStyle='rgba(46,204,113,1)';c.lineWidth=5;c.stroke();
   }
 }
@@ -575,9 +592,9 @@ function restart(){
 }
 
 setInterval(()=>{
-  if(!detActive||!started||!lastLM)return;
+  if(!detActive||!started||!lastLM||!lastLM.length)return;
   if(!classify(lastLM,SIGNS[step].detect).det){
-    if(!wrongTimer)wrongTimer=setTimeout(()=>{wrongTimer=null;if(!detActive||!lastLM)return;if(!classify(lastLM,SIGNS[step].detect).det)doWrong();},7000);
+    if(!wrongTimer)wrongTimer=setTimeout(()=>{wrongTimer=null;if(!detActive||!lastLM||!lastLM.length)return;if(!classify(lastLM,SIGNS[step].detect).det)doWrong();},7000);
   }else{clearTimeout(wrongTimer);wrongTimer=null;}
 },500);
 </script>

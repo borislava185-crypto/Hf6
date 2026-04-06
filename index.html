@@ -263,14 +263,11 @@ html,body{height:auto;overflow:auto}
   <button class="btn btn-o" id="gb" onclick="gotIt()" disabled>✓ Got It</button>
 </div>
 
-<!-- DETECTION -->
-<div class="card det-card">
-  <div class="det-top">
-    <span class="det-lbl">🖐 Hand Detection</span>
-    <span class="det-val idle" id="dt">Enable camera…</span>
-  </div>
-  <div class="det-conf" id="dc">Confidence: —</div>
-  <div class="cbar"><div class="cfill" id="cf"></div></div>
+<!-- STATS -->
+<div class="stats">
+  <div class="st"><div class="st-n" id="sc">0</div><div class="st-l">Correct</div></div>
+  <div class="st"><div class="st-n" id="sa">0</div><div class="st-l">Attempts</div></div>
+  <div class="st"><div class="st-n" id="ss">0</div><div class="st-l">Streak 🔥</div></div>
 </div>
 ```
 
@@ -293,11 +290,14 @@ html,body{height:auto;overflow:auto}
         <button class="bcam" onclick="startCam()">Enable Camera</button>
       </div>
     </div>
-    <!-- STATS under camera -->
-    <div class="stats">
-      <div class="st"><div class="st-n" id="sc">0</div><div class="st-l">Correct</div></div>
-      <div class="st"><div class="st-n" id="sa">0</div><div class="st-l">Attempts</div></div>
-      <div class="st"><div class="st-n" id="ss">0</div><div class="st-l">Streak 🔥</div></div>
+    <!-- DETECTION under camera -->
+    <div class="card det-card">
+      <div class="det-top">
+        <span class="det-lbl">🖐 Hand Detection</span>
+        <span class="det-val idle" id="dt">Enable camera…</span>
+      </div>
+      <div class="det-conf" id="dc">Confidence: —</div>
+      <div class="cbar"><div class="cfill" id="cf"></div></div>
     </div>
   </div>
   </div>

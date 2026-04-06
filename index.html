@@ -32,38 +32,34 @@ color:var(–green);padding:.2rem .65rem;border-radius:20px;font-weight:800}
 .app{position:relative;z-index:1;flex:1;display:grid;
 grid-template-columns:1fr 270px 1fr;gap:.7rem;padding:.7rem;min-height:0;overflow:hidden}
 
-/* ── LEFT COL ── */
+/* LEFT */
 .left-col{display:flex;flex-direction:column;gap:.7rem;min-height:0}
 
-/* VIDEO PREVIEW CARD */
 .vid-card{background:var(–card);border:1px solid var(–border);border-radius:18px;overflow:hidden;flex-shrink:0}
-.vid-top{padding:.6rem 1rem;border-bottom:1px solid var(–border);
+.vid-top{padding:.55rem 1rem;border-bottom:1px solid var(–border);
 display:flex;align-items:center;justify-content:space-between}
 .vid-title{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(–green)}
+.vtabs{display:flex;gap:.4rem}
+.vtab{font-size:.68rem;font-weight:800;padding:.25rem .7rem;border-radius:8px;
+border:1.5px solid var(–border);background:transparent;color:var(–muted);
+cursor:pointer;transition:all .2s;font-family:‘Nunito’,sans-serif}
+.vtab.on{border-color:var(–green);background:rgba(46,204,113,.12);color:var(–green)}
 
-/* Sign preview boxes */
-.sign-previews{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.65rem}
-.sign-preview{background:rgba(255,255,255,.03);border:1.5px solid var(–border);
-border-radius:13px;padding:.7rem;cursor:pointer;transition:all .2s;text-align:center}
-.sign-preview:hover{border-color:var(–green);background:rgba(46,204,113,.08);transform:translateY(-1px)}
-.sign-preview.active{border-color:var(–green);background:rgba(46,204,113,.12)}
-.sp-emoji{font-size:2rem;display:block;margin-bottom:.3rem}
-.sp-name{font-weight:900;font-size:.82rem;color:var(–text);display:block;margin-bottom:.25rem}
-.sp-desc{font-size:.62rem;color:var(–muted);font-weight:700;line-height:1.4;display:block;margin-bottom:.5rem}
-.sp-btn{display:inline-flex;align-items:center;gap:.35rem;
-background:var(–green);color:#0a1a0f;border:none;
-padding:.35rem .8rem;border-radius:8px;font-size:.7rem;font-weight:900;
-cursor:pointer;font-family:‘Nunito’,sans-serif;text-decoration:none;transition:all .2s}
-.sp-btn:hover{background:#27ae60;transform:scale(1.03)}
+/* VIDEO PLAYER */
+.vwrap{position:relative;background:#000;width:100%}
+.vwrap video{width:100%;display:block;max-height:210px;object-fit:contain;background:#000}
+.vwrap .vover{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+background:rgba(18,15,30,.5);opacity:0;transition:opacity .2s;cursor:pointer}
+.vwrap:hover .vover{opacity:1}
+.play-icon{font-size:2.5rem}
 
-/* How-to steps */
-.howto{padding:.5rem .65rem .65rem;border-top:1px solid var(–border)}
-.howto-title{font-size:.58rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(–muted);margin-bottom:.4rem}
-.steps{display:flex;flex-direction:column;gap:.2rem}
-.step{font-size:.7rem;font-weight:700;color:var(–text);line-height:1.5;padding:.15rem 0}
-.step span{color:var(–green)}
+/* Steps */
+.steps-box{padding:.55rem .8rem .7rem;border-top:1px solid var(–border)}
+.steps-lbl{font-size:.58rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(–muted);margin-bottom:.35rem}
+.step{font-size:.7rem;font-weight:700;color:var(–text);line-height:1.55;padding:.1rem 0}
+.step b{color:var(–green)}
 
-/* ARIA TUTOR */
+/* ARIA */
 .tutor-bubble{background:var(–card);border:1px solid var(–border);border-radius:18px;
 padding:.85rem 1rem;flex:1;display:flex;flex-direction:column;gap:.55rem;overflow:hidden;min-height:0}
 .tutor-top{display:flex;align-items:center;gap:.65rem;flex-shrink:0}
@@ -74,12 +70,11 @@ border:2px solid rgba(46,204,113,.4);position:relative}
 .avatar::after{content:’’;position:absolute;inset:-3px;border-radius:50%;
 border:2px solid rgba(46,204,113,.2);animation:ring 2.5s ease-in-out infinite}
 @keyframes ring{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.8;transform:scale(1.06)}}
-.tutor-info .tname{font-weight:900;font-size:.85rem;color:var(–green)}
-.tutor-info .trole{font-size:.58rem;color:var(–muted);font-weight:700}
+.tname{font-weight:900;font-size:.85rem;color:var(–green)}
+.trole{font-size:.58rem;color:var(–muted);font-weight:700}
 .sdot{width:6px;height:6px;border-radius:50%;background:var(–green);
 display:inline-block;animation:bl 2s infinite;margin-right:.3rem}
 @keyframes bl{0%,100%{opacity:1}50%{opacity:.3}}
-
 .msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;min-height:0}
 .msgs::-webkit-scrollbar{width:3px}
 .msgs::-webkit-scrollbar-thumb{background:rgba(46,204,113,.3);border-radius:2px}
@@ -92,7 +87,7 @@ display:inline-block;animation:bl 2s infinite;margin-right:.3rem}
 .tdot:nth-child(2){animation-delay:.15s}.tdot:nth-child(3){animation-delay:.3s}
 @keyframes td{0%,100%{opacity:.4;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
 
-/* ── CENTRE ── */
+/* CENTRE */
 .centre{display:flex;flex-direction:column;gap:.65rem}
 .phrase-card{background:var(–card);border:1px solid var(–border);border-radius:18px;padding:.95rem}
 .clbl{font-size:.58rem;color:var(–muted);text-transform:uppercase;letter-spacing:.15em;font-weight:800;margin-bottom:.65rem}
@@ -115,26 +110,23 @@ transition:all .3s;position:relative;overflow:hidden;cursor:pointer;user-select:
 .pdots{display:flex;gap:3px}
 .pd{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.12);transition:all .2s}
 .pd.x{background:var(–red)}
-
 .det-card{background:var(–card);border:1px solid var(–border);border-radius:18px;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.4rem}
 .det-big{font-weight:900;font-size:1.3rem;min-height:1.7rem;transition:all .3s}
 .det-big.idle{font-size:.75rem;color:var(–muted);font-weight:700}
 .det-conf{font-size:.62rem;color:var(–muted);font-weight:700}
 .cbar{height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden}
 .cfill{height:100%;border-radius:2px;background:var(–green);transition:width .3s;width:0}
-
 .btns{display:flex;gap:.5rem}
 .btn{flex:1;padding:.62rem;border-radius:11px;border:none;font-family:‘Nunito’,sans-serif;font-size:.78rem;font-weight:800;cursor:pointer;transition:all .2s}
 .btn-g{background:var(–green);color:#0a1a0f}.btn-g:hover{background:#27ae60;transform:translateY(-1px)}
 .btn-o{background:rgba(255,255,255,.06);color:var(–text);border:1px solid var(–border)}.btn-o:hover{background:rgba(255,255,255,.1)}
 .btn:disabled{opacity:.3;cursor:not-allowed;transform:none!important}
-
 .stats{background:var(–card);border:1px solid var(–border);border-radius:18px;padding:.6rem 1rem;display:flex;gap:.8rem}
 .st{text-align:center;flex:1}
 .st-n{font-weight:900;font-size:1.2rem;color:var(–green);line-height:1}
 .st-l{font-size:.56rem;color:var(–muted);text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-top:.1rem}
 
-/* ── CAMERA ── */
+/* CAMERA */
 .right-col{display:flex;flex-direction:column;gap:.7rem}
 .cam-card{background:var(–card);border:1px solid var(–border);border-radius:18px;overflow:hidden;position:relative;flex:1;min-height:0}
 .cam-top{position:absolute;top:0;left:0;right:0;padding:.5rem .85rem;
@@ -178,67 +170,54 @@ border-radius:14px;font-size:1rem;font-weight:900;cursor:pointer;font-family:‘
 
 <header>
   <div class="logo">Sign<span>Bot</span></div>
-  <div class="hbadge">Real BSL · AI Tutor</div>
+  <div class="hbadge">Real BSL Videos · AI Tutor</div>
   <div style="font-size:.65rem;color:var(--muted);font-weight:800">British Sign Language</div>
 </header>
 
 <div class="app">
 
-  <!-- LEFT: SIGN GUIDE + ARIA -->
+  <!-- LEFT -->
 
   <div class="left-col">
+    <div class="vid-card">
+      <div class="vid-top">
+        <span class="vid-title">📹 Watch — then copy</span>
+        <div class="vtabs">
+          <button class="vtab on" onclick="switchVid(0,this)">👋 Hello</button>
+          <button class="vtab" onclick="switchVid(1,this)">🤙 How are you?</button>
+        </div>
+      </div>
+      <div class="vwrap">
+        <video id="bslVid" playsinline controls loop
+          style="width:100%;display:block;max-height:210px;object-fit:contain;background:#000">
+          <source id="bslSrc" src="ScreenRecording_04-06-2026 15-01-35_1.mov" type="video/mp4">
+          Your browser does not support video.
+        </video>
+      </div>
+      <div class="steps-box">
+        <div class="steps-lbl" id="stepsLbl">How to sign: Hello</div>
+        <div id="stepsBody">
+          <div class="step">1. Raise hand to <b>side of your head</b></div>
+          <div class="step">2. Hand open flat, fingers pointing up</div>
+          <div class="step">3. Palm facing <b>forward</b> toward the person</div>
+          <div class="step">4. Wave wrist in a smooth arc — left then right</div>
+        </div>
+      </div>
+    </div>
 
 ```
-<div class="vid-card">
-  <div class="vid-top">
-    <span class="vid-title">📹 Watch Real BSL First</span>
-  </div>
-
-  <div class="sign-previews">
-    <!-- HELLO -->
-    <div class="sign-preview" id="prev0">
-      <span class="sp-emoji">👋</span>
-      <span class="sp-name">Hello</span>
-      <span class="sp-desc">Open hand beside your head, palm forward, wave the wrist</span>
-      <a class="sp-btn" href="https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=8s" target="_blank" rel="noopener">
-        ▶ Watch on YouTube
-      </a>
-    </div>
-    <!-- HOW ARE YOU -->
-    <div class="sign-preview" id="prev1">
-      <span class="sp-emoji">🤙</span>
-      <span class="sp-name">How are you?</span>
-      <span class="sp-desc">Closed fist, thumb up, thrust forward firmly</span>
-      <a class="sp-btn" href="https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=198s" target="_blank" rel="noopener">
-        ▶ Watch on YouTube
-      </a>
-    </div>
-  </div>
-
-  <!-- Step-by-step for current sign -->
-  <div class="howto" id="howtoBox">
-    <div class="howto-title" id="howtoLabel">How to sign: Hello</div>
-    <div class="steps" id="howtoSteps">
-      <div class="step"><span>1.</span> Raise your dominant hand to the side of your head</div>
-      <div class="step"><span>2.</span> Open hand flat — all fingers together pointing up</div>
-      <div class="step"><span>3.</span> Palm facing forward toward the person</div>
-      <div class="step"><span>4.</span> Wave your wrist in one smooth arc — left then right</div>
-    </div>
-  </div>
-</div>
-
 <!-- ARIA -->
 <div class="tutor-bubble">
   <div class="tutor-top">
     <div class="avatar">🤖</div>
-    <div class="tutor-info">
+    <div>
       <div class="tname"><span class="sdot"></span>Aria</div>
       <div class="trole">BSL AI Tutor</div>
     </div>
   </div>
   <div class="msgs" id="msgs">
     <div class="msg norm">
-      Hi! I'm Aria 👋 <strong>Watch the BSL video on YouTube first</strong>, then press Start and copy the sign on your camera. I'll give you feedback!
+      Hi! I'm Aria 👋 Watch the video on the left, then press <strong>Start</strong> and copy the sign on your camera. I'll give you feedback!
     </div>
   </div>
 </div>
@@ -252,8 +231,8 @@ border-radius:14px;font-size:1rem;font-weight:900;cursor:pointer;font-family:‘
     <div class="phrase-card">
       <div class="clbl">Phrase to sign</div>
       <div class="chips">
-        <div class="chip" id="chip0"><div class="cnum">1</div><span>Hello</span></div>
-        <div class="chip" id="chip1"><div class="cnum">2</div><span>How are you?</span></div>
+        <div class="chip" id="chip0" onclick="switchVid(0,null)"><div class="cnum">1</div><span>Hello</span></div>
+        <div class="chip" id="chip1" onclick="switchVid(1,null)"><div class="cnum">2</div><span>How are you?</span></div>
       </div>
       <div class="pbar"><div class="pfill" id="pf"></div></div>
       <div class="prow">
@@ -276,7 +255,7 @@ border-radius:14px;font-size:1rem;font-weight:900;cursor:pointer;font-family:‘
 
 <div class="btns">
   <button class="btn btn-g" id="sb" onclick="startLesson()">▶ Start</button>
-  <button class="btn btn-o" id="rb" onclick="watchAgain()" disabled>📹 Watch Again</button>
+  <button class="btn btn-o" id="rb" onclick="replayVid()" disabled>↺ Replay</button>
   <button class="btn btn-o" id="gb" onclick="gotIt()" disabled style="font-size:.7rem">✓ Got It</button>
 </div>
 
@@ -289,13 +268,13 @@ border-radius:14px;font-size:1rem;font-weight:900;cursor:pointer;font-family:‘
 
   </div>
 
-  <!-- RIGHT: CAMERA -->
+  <!-- CAMERA -->
 
   <div class="right-col">
     <div class="cam-card">
       <div class="cam-top">
         <span class="clive"><span class="cdot" id="cd"></span> Your Camera</span>
-        <span style="color:var(--muted);font-weight:800;font-size:.62rem">MediaPipe Hands</span>
+        <span style="color:var(--muted);font-weight:800;font-size:.62rem">MediaPipe</span>
       </div>
       <video id="uv" autoplay playsinline muted></video>
       <canvas id="hcvs"></canvas>
@@ -308,7 +287,6 @@ border-radius:14px;font-size:1rem;font-weight:900;cursor:pointer;font-family:‘
     </div>
     <div class="hold-note">Hold your sign steady for ~1 second to confirm ✊</div>
   </div>
-
 </div>
 
 <!-- WIN -->
@@ -321,59 +299,83 @@ border-radius:14px;font-size:1rem;font-weight:900;cursor:pointer;font-family:‘
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // SIGN DATA
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 const SIGNS = [
   {
     word: 'Hello',
     detect: 'wave',
-    youtube: 'https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=8s',
+    // Your actual video file in the same GitHub repo
+    video: 'ScreenRecording_04-06-2026 15-01-35_1.mov',
+    stepsLbl: 'How to sign: Hello',
     steps: [
-      '1. Raise your dominant hand to the <strong>side of your head</strong>',
-      '2. Open hand flat — all fingers together pointing up',
-      '3. Palm facing <strong>forward</strong> toward the person',
-      '4. Wave your wrist in one smooth arc — left then right',
+      '1. Raise hand to <b>side of your head</b>',
+      '2. Hand open flat, fingers pointing up',
+      '3. Palm facing <b>forward</b> toward the person',
+      '4. Wave wrist in a smooth arc — left then right',
     ],
-    howtoLabel: 'How to sign: Hello',
   },
   {
     word: 'How are you?',
     detect: 'thumbsup',
-    youtube: 'https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=198s',
+    // Your actual video file in the same GitHub repo
+    video: 'ScreenRecording_04-06-2026 15-06-37_1.mov',
+    stepsLbl: 'How to sign: How are you?',
     steps: [
-      '1. Make a <strong>closed fist</strong> with your dominant hand',
-      '2. Thumb pointing <strong>straight up</strong>',
-      '3. Hold at chest/chin height',
-      '4. <strong>Thrust it forward</strong> firmly toward the person',
+      '1. Make a <b>closed fist</b> with your dominant hand',
+      '2. Thumb pointing <b>straight up</b>',
+      '3. Hold at chest height',
+      '4. <b>Thrust it forward</b> firmly toward the person',
     ],
-    howtoLabel: 'How to sign: How are you?',
   },
 ];
 
-// ═══════════════════════════════════════════════
-// PRE-WRITTEN ARIA MESSAGES
-// ═══════════════════════════════════════════════
+function switchVid(idx, tabEl) {
+  const s = SIGNS[idx];
+  const vid = document.getElementById('bslVid');
+  const src = document.getElementById('bslSrc');
+  src.src = s.video;
+  vid.load();
+  vid.play().catch(()=>{});
+  // Steps
+  document.getElementById('stepsLbl').textContent = s.stepsLbl;
+  document.getElementById('stepsBody').innerHTML = s.steps.map(st=>`<div class="step">${st}</div>`).join('');
+  // Tabs
+  document.querySelectorAll('.vtab').forEach((t,i)=>t.classList.toggle('on',i===idx));
+}
+
+function replayVid() {
+  const vid = document.getElementById('bslVid');
+  vid.currentTime = 0;
+  vid.play().catch(()=>{});
+  // Also switch to current step video
+  switchVid(step, null);
+}
+
+// ═══════════════════════════════════════════
+// ARIA MESSAGES
+// ═══════════════════════════════════════════
 const TUTOR = {
   wave: {
-    intro: `Now sign <strong>Hello</strong>! Open hand, palm facing me, beside your head — then wave your wrist. Watch the YouTube video first if you need a reminder! 👋`,
-    success: `Perfect BSL Hello! 🎉 Open hand beside your head, palm forward, smooth wrist wave. Spot on! Now let's do "How are you?"`,
+    intro: `Watch the video carefully, then copy the <strong>Hello</strong> sign! Open hand beside your head, palm facing me, smooth wrist wave. You've got this! 👋`,
+    success: `Perfect BSL Hello! 🎉 Open hand beside your head, palm forward, smooth wrist wave. Spot on! Now "How are you?"`,
     wrong: [
-      `Not quite! Keep your hand <strong>completely open</strong> — all fingers spread and pointing up — beside your head with your palm facing me. Then wave the wrist.`,
-      `Try again! Three things to check:<br>• Palm facing <strong>toward me</strong> (not sideways)<br>• Hand at <strong>head/temple level</strong><br>• All fingers <strong>open and straight</strong>`,
-      `Nearly! Watch the YouTube video one more time — notice where her hand is. Beside the head, palm forward, fingers open, one sweeping wrist wave.`,
+      `Not quite! Keep your hand <strong>completely open</strong> — all fingers spread and pointing up — beside your head, palm facing me. Then wave the wrist.`,
+      `Try again! Three checks:<br>• Palm facing <strong>toward me</strong> — not sideways<br>• Hand at <strong>head/temple level</strong><br>• All fingers <strong>open and straight</strong>`,
+      `Watch the video one more time — notice exactly where the hand is. Beside the head, palm forward, fingers open, one sweeping wrist wave. Then try again!`,
     ],
-    hint: `💡 Think of waving to a friend across the street — hand up beside your head, palm out, one smooth left-right sweep from the wrist only!`,
+    hint: `💡 Think of waving to a friend far away — hand up beside your head, palm out, one smooth left-right sweep from the wrist only!`,
   },
   thumbsup: {
-    intro: `Great! Now <strong>"How are you?"</strong> — closed fist, thumb pointing straight up, then thrust it forward firmly. You've got this! 🤙`,
+    intro: `Great work! Now watch the <strong>"How are you?"</strong> video — closed fist, thumb straight up, thrust forward. You can do it! 🤙`,
     success: `Amazing!! That's BSL "How are you?" — thumbs-up fist pushed forward confidently. You signed the full phrase! 🌟`,
     wrong: [
       `Not quite! You need a <strong>closed fist with thumb up</strong> — curl ALL four fingers into your palm, thumb pointing straight up, then push forward firmly.`,
-      `Remember — tight closed fist, thumb straight up, then one firm forward push. Check:<br>• All fingers <strong>curled in</strong><br>• Thumb pointing <strong>up</strong><br>• Push <strong>forward</strong>`,
-      `Watch the YouTube video at 3:18 — see how she makes a clear thumbs-up and pushes it directly forward? Short, firm, confident movement. Try again!`,
+      `Remember — tight closed fist, thumb up, one firm forward push:<br>• All fingers <strong>curled in</strong><br>• Thumb pointing <strong>straight up</strong><br>• Push <strong>forward</strong> toward camera`,
+      `Watch the video one more time — see how the fist pushes directly forward? Short, firm, confident. Try again!`,
     ],
-    hint: `💡 Make the biggest clearest thumbs-up you can — like saying "great!" — then push that fist forward toward the camera. Bold and confident!`,
+    hint: `💡 Make the biggest clearest thumbs-up you can — then push that whole fist forward toward the camera. Bold and confident!`,
   },
 };
 
@@ -386,131 +388,111 @@ function ariaMsg(text, type='norm') {
   area.appendChild(dot);
   area.scrollTop = area.scrollHeight;
   clearTimeout(typingTO);
-  typingTO = setTimeout(() => {
+  typingTO = setTimeout(()=>{
     area.removeChild(dot);
     const m = document.createElement('div');
     m.className = `msg ${type}`;
     m.innerHTML = text;
     area.appendChild(m);
-    while (area.children.length > 5) area.removeChild(area.firstChild);
+    while(area.children.length>5) area.removeChild(area.firstChild);
     area.scrollTop = area.scrollHeight;
   }, 850);
 }
 
-function updateHowTo(stepIdx) {
-  const s = SIGNS[stepIdx];
-  document.getElementById('howtoLabel').textContent = s.howtoLabel;
-  const stepsEl = document.getElementById('howtoSteps');
-  stepsEl.innerHTML = s.steps.map(st => `<div class="step">${st}</div>`).join('');
-  // Highlight the active preview card
-  document.querySelectorAll('.sign-preview').forEach((p,i)=>p.classList.toggle('active', i===stepIdx));
-  // Update Watch Again button link
-  document.getElementById('watchLink').href = s.youtube;
-}
-
-function watchAgain() {
-  window.open(SIGNS[step].youtube, '_blank');
-}
-
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // MEDIAPIPE
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 let mpH=null, lastLM=null, detActive=false, holdCnt=0;
 const HOLD=22;
 let wrongTimer=null;
 
-async function startCam() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { width:640, height:480, facingMode:'user' } });
-    const vid = document.getElementById('uv');
-    vid.srcObject = stream;
+async function startCam(){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:'user'}});
+    const vid=document.getElementById('uv');
+    vid.srcObject=stream;
     document.getElementById('co').classList.add('hidden');
     document.getElementById('cd').classList.add('on');
     document.getElementById('so').classList.add('on');
-    mpH = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-    mpH.setOptions({ maxNumHands:1, modelComplexity:1, minDetectionConfidence:0.72, minTrackingConfidence:0.65 });
+    mpH=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+    mpH.setOptions({maxNumHands:1,modelComplexity:1,minDetectionConfidence:0.72,minTrackingConfidence:0.65});
     mpH.onResults(onHands);
-    const cam = new Camera(vid, { onFrame: async () => { await mpH.send({ image:vid }); drawOv(); }, width:640, height:480 });
+    const cam=new Camera(vid,{onFrame:async()=>{await mpH.send({image:vid});drawOv();},width:640,height:480});
     cam.start();
-    document.getElementById('dt').className = 'det-big idle';
-    document.getElementById('dt').textContent = 'Watching your hands…';
-  } catch(e) { alert('Camera access denied. Please allow camera permissions and try again.'); }
+    document.getElementById('dt').className='det-big idle';
+    document.getElementById('dt').textContent='Watching your hands…';
+  }catch(e){alert('Camera access denied. Please allow camera permissions.');}
 }
 
-function onHands(res) {
-  if (!detActive) return;
-  if (!res.multiHandLandmarks || !res.multiHandLandmarks.length) {
-    lastLM=null; holdCnt=0; detUI('No hands visible',0); return;
-  }
-  const lm = res.multiHandLandmarks[0]; lastLM = lm;
-  const { det, conf } = classify(lm, SIGNS[step].detect);
-  detUI(det ? SIGNS[step].word : 'Signing…', conf);
-  if (det && conf > 0.6) { holdCnt++; if (holdCnt>=HOLD) { holdCnt=0; doCorrect(); } }
-  else holdCnt = 0;
+function onHands(res){
+  if(!detActive)return;
+  if(!res.multiHandLandmarks||!res.multiHandLandmarks.length){lastLM=null;holdCnt=0;detUI('No hands visible',0);return;}
+  const lm=res.multiHandLandmarks[0];lastLM=lm;
+  const{det,conf}=classify(lm,SIGNS[step].detect);
+  detUI(det?SIGNS[step].word:'Signing…',conf);
+  if(det&&conf>0.6){holdCnt++;if(holdCnt>=HOLD){holdCnt=0;doCorrect();}}
+  else holdCnt=0;
 }
 
-function classify(lm, type) {
-  if (type === 'wave') {
-    const iU=lm[8].y<lm[5].y-0.04, mU=lm[12].y<lm[9].y-0.04;
-    const rU=lm[16].y<lm[13].y-0.04, pU=lm[20].y<lm[17].y-0.04;
-    const tO=Math.abs(lm[4].x-lm[0].x)>0.04;
-    const raised=lm[0].y<0.6;
+function classify(lm,type){
+  if(type==='wave'){
+    const iU=lm[8].y<lm[5].y-0.04,mU=lm[12].y<lm[9].y-0.04,rU=lm[16].y<lm[13].y-0.04,pU=lm[20].y<lm[17].y-0.04;
+    const tO=Math.abs(lm[4].x-lm[0].x)>0.04,raised=lm[0].y<0.6;
     const ext=[iU,mU,rU,pU].filter(Boolean).length;
-    return { det: ext>=3&&tO, conf: Math.min((ext/4)*0.6+(tO?0.2:0)+(raised?0.2:0),1) };
+    return{det:ext>=3&&tO,conf:Math.min((ext/4)*0.6+(tO?0.2:0)+(raised?0.2:0),1)};
   }
-  if (type === 'thumbsup') {
+  if(type==='thumbsup'){
     const tU=lm[4].y<lm[3].y-0.04;
     const c=[lm[8].y>lm[5].y-0.01,lm[12].y>lm[9].y-0.01,lm[16].y>lm[13].y-0.01,lm[20].y>lm[17].y-0.01].filter(Boolean).length;
-    return { det: tU&&c>=3, conf: (tU?0.5:0)+(c/4)*0.5 };
+    return{det:tU&&c>=3,conf:(tU?0.5:0)+(c/4)*0.5};
   }
-  return { det:false, conf:0 };
+  return{det:false,conf:0};
 }
 
-function drawOv() {
-  const hc=document.getElementById('hcvs'), v=document.getElementById('uv');
-  hc.width=v.videoWidth||640; hc.height=v.videoHeight||480;
-  const c=hc.getContext('2d'); c.clearRect(0,0,hc.width,hc.height);
-  if (!lastLM) return;
-  const W=hc.width, H=hc.height;
+function drawOv(){
+  const hc=document.getElementById('hcvs'),v=document.getElementById('uv');
+  hc.width=v.videoWidth||640;hc.height=v.videoHeight||480;
+  const c=hc.getContext('2d');c.clearRect(0,0,hc.width,hc.height);
+  if(!lastLM)return;
+  const W=hc.width,H=hc.height;
   [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,11],[11,12],
    [0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20],[5,9],[9,13],[13,17]].forEach(([a,b])=>{
-    c.beginPath(); c.moveTo((1-lastLM[a].x)*W,lastLM[a].y*H); c.lineTo((1-lastLM[b].x)*W,lastLM[b].y*H);
-    c.strokeStyle='rgba(46,204,113,.8)'; c.lineWidth=2.5; c.stroke();
+    c.beginPath();c.moveTo((1-lastLM[a].x)*W,lastLM[a].y*H);c.lineTo((1-lastLM[b].x)*W,lastLM[b].y*H);
+    c.strokeStyle='rgba(46,204,113,.8)';c.lineWidth=2.5;c.stroke();
   });
   lastLM.forEach((p,i)=>{
-    c.beginPath(); c.arc((1-p.x)*W,p.y*H,i?4:6,0,Math.PI*2);
-    c.fillStyle=i?'rgba(100,180,255,.85)':'rgba(46,204,113,.95)'; c.fill();
+    c.beginPath();c.arc((1-p.x)*W,p.y*H,i?4:6,0,Math.PI*2);
+    c.fillStyle=i?'rgba(100,180,255,.85)':'rgba(46,204,113,.95)';c.fill();
   });
-  if (holdCnt>0&&lastLM[0]) {
-    c.beginPath();
-    c.arc((1-lastLM[0].x)*W,lastLM[0].y*H,26,-Math.PI/2,-Math.PI/2+(holdCnt/HOLD)*Math.PI*2);
-    c.strokeStyle='rgba(46,204,113,.95)'; c.lineWidth=4; c.stroke();
+  if(holdCnt>0&&lastLM[0]){
+    c.beginPath();c.arc((1-lastLM[0].x)*W,lastLM[0].y*H,26,-Math.PI/2,-Math.PI/2+(holdCnt/HOLD)*Math.PI*2);
+    c.strokeStyle='rgba(46,204,113,.95)';c.lineWidth=4;c.stroke();
   }
 }
 
-function detUI(label, conf) {
-  document.getElementById('dt').className='det-big'; document.getElementById('dt').textContent=label;
+function detUI(label,conf){
+  document.getElementById('dt').className='det-big';document.getElementById('dt').textContent=label;
   document.getElementById('dc').textContent=`Confidence: ${Math.round(conf*100)}%`;
   document.getElementById('cf').style.width=`${conf*100}%`;
   document.getElementById('cf').style.background=conf>0.6?'var(--green)':conf>0.3?'var(--yellow)':'var(--red)';
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // LESSON
-// ═══════════════════════════════════════════════
-let step=0, att=0, corr=0, strk=0, started=false, wrongCnt=0;
+// ═══════════════════════════════════════════
+let step=0,att=0,corr=0,strk=0,started=false,wrongCnt=0;
 
-function startLesson() {
-  started=true; step=0; wrongCnt=0;
+function startLesson(){
+  started=true;step=0;wrongCnt=0;
   document.getElementById('sb').disabled=true;
   document.getElementById('rb').disabled=false;
   document.getElementById('gb').disabled=false;
-  updateChips(); beginStep();
+  updateChips();beginStep();
 }
 
-function beginStep() {
-  wrongCnt=0; resetDots();
-  updateHowTo(step);
+function beginStep(){
+  wrongCnt=0;resetDots();
+  switchVid(step,null);
   setTimeout(()=>ariaMsg(TUTOR[SIGNS[step].detect].intro,'norm'),300);
   setTimeout(()=>{
     detActive=true;
@@ -519,23 +501,22 @@ function beginStep() {
   },2500);
 }
 
-function doCorrect() {
-  if (!started) return;
-  detActive=false; att++; corr++; strk++;
-  updateStats();
+function doCorrect(){
+  if(!started)return;
+  detActive=false;att++;corr++;strk++;updateStats();
   document.getElementById('chip'+step).classList.remove('active','bad');
   document.getElementById('chip'+step).classList.add('ok');
   ariaMsg(TUTOR[SIGNS[step].detect].success,'good');
   detUI('✓ '+SIGNS[step].word,1);
-  setTimeout(()=>{ step++; if(step>=SIGNS.length) showWin(); else { updateChips(); beginStep(); } },2500);
+  setTimeout(()=>{step++;if(step>=SIGNS.length)showWin();else{updateChips();beginStep();}},2500);
 }
 
-function doWrong() {
-  if (!started) return;
-  detActive=false; att++; strk=0; dotFail(); updateStats();
+function doWrong(){
+  if(!started)return;
+  detActive=false;att++;strk=0;dotFail();updateStats();
   document.getElementById('chip'+step).classList.add('bad');
-  const msgs = TUTOR[SIGNS[step].detect];
-  ariaMsg(wrongCnt<msgs.wrong.length ? msgs.wrong[wrongCnt] : msgs.hint, 'bad');
+  const t=TUTOR[SIGNS[step].detect];
+  ariaMsg(wrongCnt<t.wrong.length?t.wrong[wrongCnt]:t.hint,'bad');
   wrongCnt++;
   setTimeout(()=>{
     document.getElementById('chip'+step).classList.remove('bad');
@@ -546,22 +527,20 @@ function doWrong() {
   },3800);
 }
 
-function gotIt(){ if(started) doCorrect(); }
-
+function gotIt(){if(started)doCorrect();}
 function updateChips(){
   document.querySelectorAll('.chip').forEach((c,i)=>{
     c.classList.remove('active','ok','bad');
-    if(i<step) c.classList.add('ok');
-    else if(i===step) c.classList.add('active');
+    if(i<step)c.classList.add('ok');
+    else if(i===step)c.classList.add('active');
   });
   document.getElementById('pf').style.width=`${(step/SIGNS.length)*100}%`;
   document.getElementById('slbl').textContent=`Step ${step+1} of ${SIGNS.length}`;
 }
-function updateStats(){ document.getElementById('sc').textContent=corr; document.getElementById('sa').textContent=att; document.getElementById('ss').textContent=strk; }
-function resetDots(){ document.querySelectorAll('.pd').forEach(d=>d.classList.remove('x')); }
-function dotFail(){ const ds=[...document.querySelectorAll('.pd')]; const u=ds.filter(d=>d.classList.contains('x')).length; if(u<ds.length)ds[u].classList.add('x'); }
-function showWin(){ document.getElementById('pf').style.width='100%'; setTimeout(()=>document.getElementById('ws').classList.add('show'),600); }
-
+function updateStats(){document.getElementById('sc').textContent=corr;document.getElementById('sa').textContent=att;document.getElementById('ss').textContent=strk;}
+function resetDots(){document.querySelectorAll('.pd').forEach(d=>d.classList.remove('x'));}
+function dotFail(){const ds=[...document.querySelectorAll('.pd')];const u=ds.filter(d=>d.classList.contains('x')).length;if(u<ds.length)ds[u].classList.add('x');}
+function showWin(){document.getElementById('pf').style.width='100%';setTimeout(()=>document.getElementById('ws').classList.add('show'),600);}
 function restart(){
   document.getElementById('ws').classList.remove('show');
   step=0;att=0;corr=0;strk=0;started=false;wrongCnt=0;
@@ -572,24 +551,18 @@ function restart(){
   document.getElementById('pf').style.width='0%';
   document.getElementById('dt').className='det-big idle';
   document.getElementById('dt').textContent='Enable camera to begin…';
-  updateStats(); resetDots(); updateHowTo(0);
+  updateStats();resetDots();
+  switchVid(0,null);
   document.getElementById('msgs').innerHTML='';
   ariaMsg("Let's go again! Watch the video, then show me your sign 💪",'norm');
 }
 
-// Add a hidden link for watchAgain to use
-const wl = document.createElement('a'); wl.id='watchLink'; wl.style.display='none'; document.body.appendChild(wl);
-
-// Auto-wrong timer
 setInterval(()=>{
   if(!detActive||!started||!lastLM)return;
   if(!classify(lastLM,SIGNS[step].detect).det){
-    if(!wrongTimer)wrongTimer=setTimeout(()=>{ wrongTimer=null; if(!detActive||!lastLM)return; if(!classify(lastLM,SIGNS[step].detect).det)doWrong(); },5000);
-  }else{ clearTimeout(wrongTimer); wrongTimer=null; }
+    if(!wrongTimer)wrongTimer=setTimeout(()=>{wrongTimer=null;if(!detActive||!lastLM)return;if(!classify(lastLM,SIGNS[step].detect).det)doWrong();},5000);
+  }else{clearTimeout(wrongTimer);wrongTimer=null;}
 },500);
-
-// Init
-updateHowTo(0);
 </script>
 
 </body>

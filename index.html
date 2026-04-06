@@ -401,26 +401,42 @@ function ariaMsg(text, type='norm') {
 // MEDIAPIPE
 // ═══════════════════════════════════════════
 let mpH=null, lastLM=[], detActive=false, holdCnt=0;
-const HOLD=12;
+const HOLD=10;
 let wrongTimer=null;
+let processing=false; // prevent overlapping frames
 
 async function startCam(){
   try{
-    const stream=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:'user'}});
+    const stream=await navigator.mediaDevices.getUserMedia({
+      video:{width:320,height:240,facingMode:'user',frameRate:{ideal:15,max:20}}
+    });
     const vid=document.getElementById('uv');
     vid.srcObject=stream;
     document.getElementById('co').classList.add('hidden');
     document.getElementById('cd').classList.add('on');
     document.getElementById('so').classList.add('on');
+
     mpH=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-    mpH.setOptions({maxNumHands:2,modelComplexity:0,minDetectionConfidence:0.6,minTrackingConfidence:0.5});
+    mpH.setOptions({
+      maxNumHands:2,
+      modelComplexity:0,
+      minDetectionConfidence:0.55,
+      minTrackingConfidence:0.45
+    });
     mpH.onResults(onHands);
-    let frameCount=0;
-    const cam=new Camera(vid,{onFrame:async()=>{
-      frameCount++;
-      if(frameCount%2===0){ await mpH.send({image:vid}); drawOv(); }
-    },width:320,height:240});
-    cam.start();
+
+    // Use requestAnimationFrame loop instead of Camera util — smoother on mobile
+    async function loop(){
+      if(!processing && vid.readyState===4){
+        processing=true;
+        try{ await mpH.send({image:vid}); }catch(e){}
+        processing=false;
+      }
+      drawOv();
+      setTimeout(()=>requestAnimationFrame(loop), 80); // ~12fps — light on mobile
+    }
+    vid.onloadeddata=()=>{ requestAnimationFrame(loop); };
+
     document.getElementById('dt').className='det-big idle';
     document.getElementById('dt').textContent='Watching your hands…';
   }catch(e){alert('Camera access denied. Please allow camera permissions.');}

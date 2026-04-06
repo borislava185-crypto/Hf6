@@ -432,7 +432,7 @@ async function startCam(){
         try{ await mpH.send({image:vid}); }catch(e){}
         processing=false;
       }
-      drawOv();
+      drawOv(); // always draw, even when detActive=false
       setTimeout(()=>requestAnimationFrame(loop), 80); // ~12fps — light on mobile
     }
     vid.onloadeddata=()=>{ requestAnimationFrame(loop); };
@@ -443,11 +443,14 @@ async function startCam(){
 }
 
 function onHands(res){
-  if(!detActive)return;
+  // Always update landmarks so skeleton keeps drawing smoothly
   if(!res.multiHandLandmarks||!res.multiHandLandmarks.length){
-    lastLM=[];holdCnt=0;detUI('No hands visible',0);return;
+    lastLM=[];
+    if(detActive) detUI('No hands visible',0);
+    return;
   }
-  lastLM=res.multiHandLandmarks; // array of hands
+  lastLM=res.multiHandLandmarks;
+  if(!detActive)return; // skeleton draws but no game logic
   const{det,conf}=classify(lastLM,SIGNS[step].detect);
   detUI(det?SIGNS[step].word:'Signing…',conf);
   if(det&&conf>0.5){holdCnt++;if(holdCnt>=HOLD){holdCnt=0;doCorrect();}}
@@ -543,9 +546,14 @@ function startLesson(){
 
 function beginStep(){
   wrongCnt=0;resetDots();
+  detActive=false;
+  holdCnt=0;
+  lastLM=[];
+  clearTimeout(wrongTimer);wrongTimer=null;
   switchVid(step,null);
   setTimeout(()=>ariaMsg(TUTOR[SIGNS[step].detect].intro,'norm'),300);
   setTimeout(()=>{
+    lastLM=[];holdCnt=0;
     detActive=true;
     document.getElementById('dt').className='det-big idle';
     document.getElementById('dt').textContent='Watching your hands…';
@@ -554,17 +562,28 @@ function beginStep(){
 
 function doCorrect(){
   if(!started)return;
-  detActive=false;att++;corr++;strk++;updateStats();
+  detActive=false;
+  holdCnt=0;
+  lastLM=[];
+  clearTimeout(wrongTimer);wrongTimer=null;
+  att++;corr++;strk++;updateStats();
   document.getElementById('chip'+step).classList.remove('active','bad');
   document.getElementById('chip'+step).classList.add('ok');
   ariaMsg(TUTOR[SIGNS[step].detect].success,'good');
   detUI('✓ '+SIGNS[step].word,1);
-  setTimeout(()=>{step++;if(step>=SIGNS.length)showWin();else{updateChips();beginStep();}},2500);
+  setTimeout(()=>{
+    step++;
+    if(step>=SIGNS.length) showWin();
+    else { updateChips(); beginStep(); }
+  },2500);
 }
 
 function doWrong(){
   if(!started)return;
-  detActive=false;att++;strk=0;dotFail();updateStats();
+  detActive=false;
+  holdCnt=0;
+  clearTimeout(wrongTimer);wrongTimer=null;
+  att++;strk=0;dotFail();updateStats();
   document.getElementById('chip'+step).classList.add('bad');
   const t=TUTOR[SIGNS[step].detect];
   ariaMsg(wrongCnt<t.wrong.length?t.wrong[wrongCnt]:t.hint,'bad');

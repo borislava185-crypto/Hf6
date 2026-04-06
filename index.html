@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SignBot — BSL Tutor</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<style>
+:root {
+  --bg: #060810;
+  --panel: #0d1117;
+  --border: rgba(255,255,255,0.07);
+  --green: #00e5a0;
+  --red: #ff4757;
+  --blue: #4da6ff;
+  --yellow: #ffd32a;
+  --text: #e8eaf0;
+  --muted: rgba(232,234,240,0.45);
+  --robot-skin: #1a2535;
+  --robot-glow: #00e5a0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  display:flex;flex-direction:column;
+  position:relative;
+}
+
+/* BACKGROUND GRID */
+body::before{
+content:’’;position:fixed;inset:0;
+background-image:linear-gradient(rgba(0,229,160,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,160,0.03) 1px,transparent 1px);
+background-size:40px 40px;
+pointer-events:none;z-index:0;
+}
+
+/* TOP BAR */
+header{
+position:relative;z-index:10;
+padding:0.8rem 1.5rem;
+border-bottom:1px solid var(–border);
+display:flex;align-items:center;justify-content:space-between;
+background:rgba(6,8,16,0.9);
+backdrop-filter:blur(10px);
+flex-shrink:0;
+}
+.logo{font-family:‘Syne’,sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-0.02em}
+.logo span{color:var(–green)}
+.status-pill{
+display:flex;align-items:center;gap:0.5rem;
+font-size:0.72rem;color:var(–muted);
+background:rgba(255,255,255,0.04);
+border:1px solid var(–border);
+padding:0.3rem 0.8rem;border-radius:20px;
+}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(–green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* MAIN LAYOUT */
+.app{
+position:relative;z-index:1;
+flex:1;display:grid;
+grid-template-columns:1fr 320px 1fr;
+grid-template-rows:1fr auto;
+gap:1rem;padding:1rem;
+min-height:0;
+overflow:hidden;
+}
+
+/* ── ROBOT PANEL ── */
+.robot-panel{
+grid-column:1;grid-row:1/3;
+background:var(–panel);
+border:1px solid var(–border);
+border-radius:16px;
+display:flex;flex-direction:column;
+align-items:center;
+padding:1.5rem 1rem;
+gap:1rem;
+overflow:hidden;
+position:relative;
+}
+.robot-panel::before{
+content:’’;position:absolute;
+top:-60px;left:50%;transform:translateX(-50%);
+width:200px;height:200px;
+background:radial-gradient(circle,rgba(0,229,160,0.12) 0%,transparent 70%);
+pointer-events:none;
+}
+.robot-label{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(–green);font-weight:500}
+
+/* ROBOT SVG */
+.robot-wrap{position:relative;width:180px;height:220px;flex-shrink:0}
+.robot-svg{width:100%;height:100%}
+
+/* Head */
+.r-head{animation:headBob 3s ease-in-out infinite}
+@keyframes headBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+/* Eyes */
+.r-eye{animation:eyeBlink 4s ease-in-out infinite}
+@keyframes eyeBlink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(0.1)}}
+/* Mouth */
+.r-mouth{transition:d 0.4s ease}
+/* Body glow */
+.r-glow{animation:glowPulse 2s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{opacity:0.5}50%{opacity:1}}
+/* Arm */
+.r-arm-l{transform-origin:55px 120px;animation:armWave 0s ease-in-out}
+.r-arm-r{transform-origin:125px 120px}
+.r-arm-l.waving{animation:armWave 0.6s ease-in-out 3}
+@keyframes armWave{0%,100%{transform:rotate(0deg)}30%{transform:rotate(-25deg)}70%{transform:rotate(10deg)}}
+.r-arm-l.showing{animation:armShow 1s ease-in-out infinite alternate}
+@keyframes armShow{from{transform:rotate(-10deg)}to{transform:rotate(-30deg)}}
+
+/* SPEECH BUBBLE */
+.speech-bubble{
+background:rgba(0,229,160,0.08);
+border:1px solid rgba(0,229,160,0.25);
+border-radius:12px;
+padding:0.9rem 1.1rem;
+font-size:0.82rem;
+line-height:1.6;
+color:var(–text);
+position:relative;
+width:100%;
+min-height:70px;
+flex:1;
+}
+.speech-bubble::before{
+content:’’;position:absolute;
+top:-8px;left:50%;transform:translateX(-50%);
+border:8px solid transparent;
+border-bottom-color:rgba(0,229,160,0.25);
+border-top:none;
+}
+.bubble-name{font-size:0.65rem;color:var(–green);font-weight:600;letter-spacing:0.1em;margin-bottom:0.4rem}
+#robotSpeech{transition:opacity 0.3s}
+
+/* HAND DEMO */
+.hand-demo{
+width:100%;
+background:rgba(255,255,255,0.03);
+border:1px solid var(–border);
+border-radius:10px;
+padding:0.8rem;
+text-align:center;
+}
+.hand-demo-label{font-size:0.65rem;color:var(–muted);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.1em}
+.hand-emoji-big{font-size:3.5rem;line-height:1;display:block;animation:handPulse 1.5s ease-in-out infinite}
+@keyframes handPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.hand-desc{font-size:0.72rem;color:var(–muted);margin-top:0.4rem;line-height:1.5}
+
+/* ── CENTRE PANEL ── */
+.centre-panel{
+grid-column:2;grid-row:1/3;
+display:flex;flex-direction:column;gap:1rem;
+}
+
+/* Phrase display */
+.phrase-display{
+background:var(–panel);
+border:1px solid var(–border);
+border-radius:16px;
+padding:1.2rem;
+}
+.phrase-title{font-size:0.65rem;color:var(–muted);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.8rem}
+.phrase-words{display:flex;flex-direction:column;gap:0.5rem}
+.word-chip{
+display:flex;align-items:center;gap:0.6rem;
+padding:0.7rem 1rem;
+border-radius:10px;
+border:2px solid var(–border);
+background:rgba(255,255,255,0.02);
+font-family:‘Syne’,sans-serif;
+font-weight:700;
+font-size:1rem;
+transition:all 0.3s ease;
+position:relative;
+overflow:hidden;
+}
+.word-chip.active{
+border-color:var(–blue);
+background:rgba(77,166,255,0.08);
+color:var(–blue);
+}
+.word-chip.active::after{
+content:‘← SIGN THIS NOW’;
+position:absolute;right:0.7rem;
+font-size:0.55rem;letter-spacing:0.1em;
+color:var(–blue);opacity:0.7;
+font-family:‘Inter’,sans-serif;font-weight:500;
+}
+.word-chip.correct{
+border-color:var(–green);
+background:rgba(0,229,160,0.08);
+color:var(–green);
+}
+.word-chip.correct::after{
+content:‘✓’;
+position:absolute;right:0.9rem;
+font-size:1rem;color:var(–green);
+}
+.word-chip.wrong{
+border-color:var(–red);
+background:rgba(255,71,87,0.08);
+color:var(–red);
+animation:shake 0.4s ease;
+}
+.word-chip.wrong::after{
+content:‘✗ Try again’;
+position:absolute;right:0.7rem;
+font-size:0.55rem;letter-spacing:0.1em;
+color:var(–red);opacity:0.9;
+font-family:‘Inter’,sans-serif;font-weight:500;
+}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.word-number{
+width:20px;height:20px;border-radius:50%;
+background:rgba(255,255,255,0.08);
+font-size:0.65rem;display:flex;align-items:center;justify-content:center;
+font-family:‘Inter’,sans-serif;font-weight:500;flex-shrink:0;
+}
+
+/* Progress bar */
+.progress-track{
+background:rgba(255,255,255,0.06);
+border-radius:4px;height:4px;margin-top:0.8rem;overflow:hidden;
+}
+.progress-fill{
+height:100%;background:linear-gradient(90deg,var(–green),#00b37a);
+border-radius:4px;transition:width 0.5s ease;width:0%;
+}
+
+/* Attempt counter */
+.attempt-info{
+display:flex;justify-content:space-between;align-items:center;
+margin-top:0.6rem;
+font-size:0.7rem;color:var(–muted);
+}
+.attempt-dots{display:flex;gap:4px}
+.attempt-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.15);transition:all 0.2s}
+.attempt-dot.used{background:var(–red)}
+
+/* Detection result */
+.detection-box{
+background:var(–panel);
+border:1px solid var(–border);
+border-radius:16px;
+padding:1rem 1.2rem;
+display:flex;flex-direction:column;gap:0.5rem;
+}
+.det-label{font-size:0.65rem;color:var(–muted);text-transform:uppercase;letter-spacing:0.15em}
+.det-sign{
+font-family:‘Syne’,sans-serif;font-size:1.6rem;font-weight:800;
+color:var(–text);min-height:2rem;
+transition:all 0.3s;
+}
+.det-sign.detecting{font-size:0.8rem;color:var(–muted);font-family:‘Inter’,sans-serif;font-weight:400;animation:dots 1.2s infinite}
+@keyframes dots{0%{content:‘Watching your hands…’}33%{content:‘Watching your hands….’}66%{content:‘Watching your hands……’}}
+.det-confidence{font-size:0.72rem;color:var(–muted)}
+.confidence-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;margin-top:0.3rem;overflow:hidden}
+.confidence-fill{height:100%;border-radius:2px;background:var(–green);transition:width 0.4s ease;width:0%}
+
+/* Controls */
+.controls{display:flex;gap:0.6rem;flex-wrap:wrap}
+.btn{
+flex:1;padding:0.7rem;border-radius:10px;border:none;
+font-family:‘Inter’,sans-serif;font-size:0.8rem;font-weight:500;
+cursor:pointer;transition:all 0.2s;min-width:80px;
+}
+.btn-green{background:var(–green);color:#060810}
+.btn-green:hover{background:#00c98a;transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(–text);border:1px solid var(–border)}
+.btn-outline:hover{border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.04)}
+.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important}
+
+/* ── CAMERA PANEL ── */
+.camera-panel{
+grid-column:3;grid-row:1;
+background:var(–panel);
+border:1px solid var(–border);
+border-radius:16px;
+overflow:hidden;
+position:relative;
+min-height:0;
+}
+.cam-header{
+position:absolute;top:0;left:0;right:0;
+padding:0.6rem 0.9rem;
+background:rgba(6,8,16,0.8);backdrop-filter:blur(6px);
+display:flex;align-items:center;justify-content:space-between;
+z-index:5;font-size:0.72rem;
+}
+.cam-live{display:flex;align-items:center;gap:0.4rem;color:var(–muted)}
+.cam-dot{width:6px;height:6px;border-radius:50%;background:var(–red);animation:blink 1s infinite}
+.cam-dot.active{background:var(–green)}
+#userVideo{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}
+canvas#handCanvas{
+position:absolute;inset:0;width:100%;height:100%;
+pointer-events:none;z-index:3;transform:scaleX(-1);
+}
+.cam-overlay{
+position:absolute;inset:0;
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+background:rgba(6,8,16,0.85);z-index:4;gap:1rem;
+transition:opacity 0.3s;
+}
+.cam-overlay.hidden{opacity:0;pointer-events:none}
+.cam-overlay-icon{font-size:2.5rem}
+.cam-overlay p{font-size:0.85rem;color:var(–muted);text-align:center;max-width:200px;line-height:1.6}
+.btn-cam{
+background:var(–green);color:#060810;
+border:none;padding:0.6rem 1.4rem;border-radius:8px;
+font-size:0.82rem;font-weight:600;cursor:pointer;
+font-family:‘Inter’,sans-serif;transition:background 0.2s;
+}
+.btn-cam:hover{background:#00c98a}
+
+/* Scan frame overlay */
+.scan-overlay{
+position:absolute;inset:15px;
+border:2px solid rgba(0,229,160,0.4);
+border-radius:10px;pointer-events:none;z-index:4;
+display:none;animation:scanGlow 2s ease-in-out infinite;
+}
+.scan-overlay.active{display:block}
+@keyframes scanGlow{0%,100%{border-color:rgba(0,229,160,0.4)}50%{border-color:rgba(0,229,160,0.8)}}
+.scan-corner2{position:absolute;width:16px;height:16px;border-color:var(–green);border-style:solid;border-width:0}
+.tl2{top:-1px;left:-1px;border-top-width:3px;border-left-width:3px;border-radius:3px 0 0 0}
+.tr2{top:-1px;right:-1px;border-top-width:3px;border-right-width:3px;border-radius:0 3px 0 0}
+.bl2{bottom:-1px;left:-1px;border-bottom-width:3px;border-left-width:3px;border-radius:0 0 0 3px}
+.br2{bottom:-1px;right:-1px;border-bottom-width:3px;border-right-width:3px;border-radius:0 0 3px 0}
+
+/* ── BOTTOM STATS ── */
+.stats-bar{
+grid-column:3;grid-row:2;
+background:var(–panel);
+border:1px solid var(–border);
+border-radius:12px;
+padding:0.7rem 1rem;
+display:flex;gap:1.5rem;align-items:center;
+}
+.stat{text-align:center;flex:1}
+.stat-n{font-family:‘Syne’,sans-serif;font-size:1.3rem;font-weight:800;color:var(–green)}
+.stat-l{font-size:0.62rem;color:var(–muted);text-transform:uppercase;letter-spacing:0.1em}
+
+/* WIN SCREEN */
+.win-screen{
+position:fixed;inset:0;background:rgba(6,8,16,0.95);
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+z-index:100;gap:1.5rem;
+animation:fadeIn 0.5s ease;
+display:none;
+}
+.win-screen.show{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+.win-trophy{font-size:5rem;animation:bounce 0.6s ease infinite alternate}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-15px)}}
+.win-title{font-family:‘Syne’,sans-serif;font-size:2.5rem;font-weight:800;color:var(–green)}
+.win-sub{color:var(–muted);font-size:1rem}
+.btn-restart{
+background:var(–green);color:#060810;border:none;
+padding:0.9rem 2.5rem;border-radius:12px;
+font-size:1rem;font-weight:700;cursor:pointer;
+font-family:‘Syne’,sans-serif;transition:all 0.2s;margin-top:0.5rem;
+}
+.btn-restart:hover{transform:scale(1.05)}
+
+/* Responsive */
+@media(max-width:900px){
+.app{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto}
+.robot-panel{grid-column:1/3;grid-row:1;flex-direction:row;height:200px;padding:1rem}
+.centre-panel{grid-column:1;grid-row:2/4}
+.camera-panel{grid-column:2;grid-row:2}
+.stats-bar{grid-column:2;grid-row:3}
+.robot-wrap{width:100px;height:130px;flex-shrink:0}
+body{overflow:auto}html{height:auto}
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="logo">Sign<span>Bot</span></div>
+  <div class="status-pill"><span class="status-dot"></span> MediaPipe Active</div>
+  <div style="font-size:0.72rem;color:var(--muted)">BSL Tutor v1.0</div>
+</header>
+
+<div class="app">
+
+  <!-- ── ROBOT ── -->
+
+  <div class="robot-panel">
+    <div class="robot-label">Your AI Tutor</div>
+    <div class="robot-wrap">
+      <svg class="robot-svg" viewBox="0 0 180 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="bodyGrad" cx="50%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#1e3048"/>
+            <stop offset="100%" stop-color="#0d1a2a"/>
+          </radialGradient>
+          <radialGradient id="headGrad" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#243550"/>
+            <stop offset="100%" stop-color="#111e30"/>
+          </radialGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+```
+    <!-- BODY -->
+    <rect x="35" y="105" width="110" height="90" rx="18" fill="url(#bodyGrad)" stroke="rgba(0,229,160,0.2)" stroke-width="1.5"/>
+
+    <!-- Chest panel -->
+    <rect x="55" y="120" width="70" height="45" rx="8" fill="rgba(0,0,0,0.3)" stroke="rgba(0,229,160,0.15)" stroke-width="1"/>
+    <!-- Chest lights -->
+    <circle cx="72" cy="135" r="5" fill="var(--green)" filter="url(#glow)" class="r-glow"/>
+    <circle cx="90" cy="135" r="5" fill="#4da6ff" filter="url(#glow)" style="animation:glowPulse 2.5s ease-in-out infinite"/>
+    <circle cx="108" cy="135" r="5" fill="#ffd32a" filter="url(#glow)" style="animation:glowPulse 3s ease-in-out infinite"/>
+    <!-- Chest lines -->
+    <line x1="58" y1="150" x2="122" y2="150" stroke="rgba(0,229,160,0.2)" stroke-width="1"/>
+    <line x1="58" y1="157" x2="100" y2="157" stroke="rgba(0,229,160,0.15)" stroke-width="1"/>
+
+    <!-- LEFT ARM -->
+    <g class="r-arm-l" id="armLeft">
+      <rect x="10" y="108" width="24" height="62" rx="12" fill="url(#bodyGrad)" stroke="rgba(0,229,160,0.2)" stroke-width="1.5"/>
+      <ellipse cx="22" cy="174" rx="11" ry="13" fill="#1a2535" stroke="rgba(0,229,160,0.3)" stroke-width="1.5"/>
+      <!-- hand fingers hint -->
+      <line x1="17" y1="178" x2="17" y2="184" stroke="rgba(0,229,160,0.4)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="22" y1="180" x2="22" y2="187" stroke="rgba(0,229,160,0.4)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="27" y1="178" x2="27" y2="184" stroke="rgba(0,229,160,0.4)" stroke-width="2" stroke-linecap="round"/>
+    </g>
+
+    <!-- RIGHT ARM -->
+    <g class="r-arm-r">
+      <rect x="146" y="108" width="24" height="62" rx="12" fill="url(#bodyGrad)" stroke="rgba(0,229,160,0.2)" stroke-width="1.5"/>
+      <ellipse cx="158" cy="174" rx="11" ry="13" fill="#1a2535" stroke="rgba(0,229,160,0.3)" stroke-width="1.5"/>
+      <line x1="153" y1="178" x2="153" y2="184" stroke="rgba(0,229,160,0.4)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="158" y1="180" x2="158" y2="187" stroke="rgba(0,229,160,0.4)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="163" y1="178" x2="163" y2="184" stroke="rgba(0,229,160,0.4)" stroke-width="2" stroke-linecap="round"/>
+    </g>
+
+    <!-- NECK -->
+    <rect x="78" y="90" width="24" height="18" rx="6" fill="#0f1c2e" stroke="rgba(0,229,160,0.15)" stroke-width="1"/>
+
+    <!-- HEAD -->
+    <g class="r-head">
+      <rect x="30" y="20" width="120" height="75" rx="22" fill="url(#headGrad)" stroke="rgba(0,229,160,0.25)" stroke-width="1.5"/>
+
+      <!-- Ear details -->
+      <rect x="18" y="38" width="14" height="30" rx="7" fill="#111e30" stroke="rgba(0,229,160,0.2)" stroke-width="1"/>
+      <circle cx="25" cy="53" r="4" fill="rgba(0,229,160,0.15)" stroke="rgba(0,229,160,0.4)" stroke-width="1"/>
+      <rect x="148" y="38" width="14" height="30" rx="7" fill="#111e30" stroke="rgba(0,229,160,0.2)" stroke-width="1"/>
+      <circle cx="155" cy="53" r="4" fill="rgba(0,229,160,0.15)" stroke="rgba(0,229,160,0.4)" stroke-width="1"/>
+
+      <!-- Eyes -->
+      <g class="r-eye">
+        <rect x="48" y="38" width="32" height="22" rx="8" fill="#060d18" stroke="rgba(0,229,160,0.3)" stroke-width="1.5"/>
+        <circle cx="64" cy="49" r="7" fill="var(--green)" filter="url(#glow)" opacity="0.9"/>
+        <circle cx="64" cy="49" r="3.5" fill="#060d18"/>
+        <circle cx="66" cy="47" r="1.5" fill="white" opacity="0.8"/>
+      </g>
+      <g class="r-eye">
+        <rect x="100" y="38" width="32" height="22" rx="8" fill="#060d18" stroke="rgba(0,229,160,0.3)" stroke-width="1.5"/>
+        <circle cx="116" cy="49" r="7" fill="var(--green)" filter="url(#glow)" opacity="0.9"/>
+        <circle cx="116" cy="49" r="3.5" fill="#060d18"/>
+        <circle cx="118" cy="47" r="1.5" fill="white" opacity="0.8"/>
+      </g>
+
+      <!-- Mouth -->
+      <path id="robotMouth" d="M 68 73 Q 90 82 112 73" stroke="rgba(0,229,160,0.6)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+      <!-- Forehead line -->
+      <line x1="75" y1="28" x2="105" y2="28" stroke="rgba(0,229,160,0.2)" stroke-width="1"/>
+      <circle cx="90" cy="25" r="3" fill="rgba(0,229,160,0.3)" stroke="rgba(0,229,160,0.5)" stroke-width="1"/>
+    </g>
+
+    <!-- Legs -->
+    <rect x="55" y="192" width="28" height="25" rx="8" fill="#0d1a2a" stroke="rgba(0,229,160,0.15)" stroke-width="1"/>
+    <rect x="97" y="192" width="28" height="25" rx="8" fill="#0d1a2a" stroke="rgba(0,229,160,0.15)" stroke-width="1"/>
+    <rect x="52" y="210" width="34" height="10" rx="5" fill="#111e30"/>
+    <rect x="94" y="210" width="34" height="10" rx="5" fill="#111e30"/>
+  </svg>
+</div>
+
+<div class="speech-bubble">
+  <div class="bubble-name">ARIA · BSL TUTOR</div>
+  <div id="robotSpeech">Hi! I'm Aria, your BSL tutor. Let's learn to sign <strong>"Hello, How are you?"</strong> Click Start when you're ready! 👋</div>
+</div>
+
+<div class="hand-demo" id="handDemo">
+  <div class="hand-demo-label">Sign to perform</div>
+  <span class="hand-emoji-big" id="demoEmoji">👋</span>
+  <div class="hand-desc" id="demoDesc">Wave your open hand side to side</div>
+</div>
+```
+
+  </div>
+
+  <!-- ── CENTRE ── -->
+
+  <div class="centre-panel">
+    <div class="phrase-display">
+      <div class="phrase-title">Your phrase to sign</div>
+      <div class="phrase-words">
+        <div class="word-chip" id="chip0">
+          <div class="word-number">1</div>
+          <span>Hello</span>
+        </div>
+        <div class="word-chip" id="chip1">
+          <div class="word-number">2</div>
+          <span>How are you?</span>
+        </div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="attempt-info">
+        <span id="stepLabel">Step 1 of 2</span>
+        <div class="attempt-dots">
+          <div class="attempt-dot" id="dot0"></div>
+          <div class="attempt-dot" id="dot1"></div>
+          <div class="attempt-dot" id="dot2"></div>
+        </div>
+      </div>
+    </div>
+
+```
+<div class="detection-box">
+  <div class="det-label">MediaPipe Detecting</div>
+  <div class="det-sign detecting" id="detSign">Watching your hands…</div>
+  <div class="det-confidence" id="detConf">Confidence: —</div>
+  <div class="confidence-bar"><div class="confidence-fill" id="confFill"></div></div>
+</div>
+
+<div class="controls">
+  <button class="btn btn-green" id="startBtn" onclick="startLesson()">▶ Start</button>
+  <button class="btn btn-outline" id="repeatBtn" onclick="repeatDemo()" disabled>↺ Repeat Demo</button>
+  <button class="btn btn-outline" id="skipBtn" onclick="markCorrect()" disabled style="font-size:0.72rem">✓ I Got It</button>
+</div>
+```
+
+  </div>
+
+  <!-- ── CAMERA ── -->
+
+  <div class="camera-panel">
+    <div class="cam-header">
+      <span class="cam-live"><span class="cam-dot" id="camDot"></span> Your Camera</span>
+      <span style="color:var(--muted)">MediaPipe Hands</span>
+    </div>
+    <video id="userVideo" autoplay playsinline muted></video>
+    <canvas id="handCanvas"></canvas>
+    <div class="scan-overlay" id="scanOverlay">
+      <div class="scan-corner2 tl2"></div>
+      <div class="scan-corner2 tr2"></div>
+      <div class="scan-corner2 bl2"></div>
+      <div class="scan-corner2 br2"></div>
+    </div>
+    <div class="cam-overlay" id="camOverlay">
+      <div class="cam-overlay-icon">🤲</div>
+      <p>Enable camera so Aria can watch your signs</p>
+      <button class="btn-cam" onclick="startCamera()">Enable Camera</button>
+    </div>
+  </div>
+
+  <!-- ── STATS ── -->
+
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-n" id="statCorrect">0</div><div class="stat-l">Correct</div></div>
+    <div class="stat"><div class="stat-n" id="statAttempts">0</div><div class="stat-l">Attempts</div></div>
+    <div class="stat"><div class="stat-n" id="statStreak">0🔥</div><div class="stat-l">Streak</div></div>
+  </div>
+</div>
+
+<!-- WIN SCREEN -->
+
+<div class="win-screen" id="winScreen">
+  <div class="win-trophy">🏆</div>
+  <div class="win-title">Brilliant!</div>
+  <p class="win-sub">You signed <strong>"Hello, How are you?"</strong> correctly in BSL!</p>
+  <p style="color:var(--muted);font-size:0.85rem">Aria is very proud of you 🤖💚</p>
+  <button class="btn-restart" onclick="restartLesson()">Try Again ↺</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// LESSON DATA
+// ═══════════════════════════════════════════════════
+const SIGNS = [
+  {
+    word: 'Hello',
+    emoji: '👋',
+    desc: 'Open flat hand, fingers together. Wave side-to-side from the wrist near your forehead.',
+    detect: 'wave', // what we look for
+    ariaIntro: 'Great! Let\'s start with <strong>"Hello"</strong>. In BSL, you wave an open hand near your forehead. Watch me, then copy!',
+    ariaCorrect: 'Perfect! That\'s a great "Hello"! 🎉 Now let\'s try the next sign.',
+    ariaWrong: 'Almost! For <strong>Hello</strong>, keep your fingers <em>together and flat</em> — like a salute — and wave from your wrist, not your whole arm. Try again!',
+    ariaHint: 'Tip: Hold your hand flat near your temple, fingers pointing up, and flick your wrist side to side.',
+  },
+  {
+    word: 'How are you?',
+    emoji: '🤙',
+    desc: 'Point at the person, then make a thumbs up and wiggle with raised eyebrows (questioning expression).',
+    detect: 'thumbsup',
+    ariaIntro: 'Excellent! Now <strong>"How are you?"</strong> — point your finger at them, then give a thumbs up while raising your eyebrows like a question. Expression matters in BSL!',
+    ariaCorrect: 'Amazing! You did it! You\'ve signed the full phrase! 🌟',
+    ariaWrong: 'Not quite! For <strong>How are you?</strong>, you need a clear <em>thumbs up</em> with raised eyebrows. The facial expression is part of the sign in BSL — don\'t forget to look questioning!',
+    ariaHint: 'Tip: BSL uses your face too! Raise your eyebrows while making a thumbs up — that\'s how it becomes a question.',
+  }
+];
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let currentStep = 0;
+let attempts = 0;
+let correct = 0;
+let streak = 0;
+let lessonStarted = false;
+let cameraStarted = false;
+let lastLandmarks = null;
+let detectionActive = false;
+let holdTimer = null;
+let holdCount = 0;
+const HOLD_FRAMES = 18; // frames sign must be held
+let lastDetected = null;
+let wrongCount = 0;
+
+// ═══════════════════════════════════════════════════
+// MEDIAPIPE SETUP
+// ═══════════════════════════════════════════════════
+let hands = null;
+
+async function initMediaPipe() {
+  hands = new Hands({
+    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+  });
+  hands.setOptions({
+    maxNumHands: 2,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.7,
+    minTrackingConfidence: 0.6
+  });
+  hands.onResults(onHandResults);
+}
+
+async function startCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: 'user' } });
+    const video = document.getElementById('userVideo');
+    video.srcObject = stream;
+
+    document.getElementById('camOverlay').classList.add('hidden');
+    document.getElementById('camDot').classList.add('active');
+    document.getElementById('scanOverlay').classList.add('active');
+    cameraStarted = true;
+
+    await initMediaPipe();
+
+    const camera = new Camera(video, {
+      onFrame: async () => {
+        await hands.send({ image: video });
+        drawOverlay();
+      },
+      width: 640, height: 480
+    });
+    camera.start();
+  } catch (e) {
+    alert('Camera access denied. Please allow camera permissions.');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// HAND RESULT PROCESSING
+// ═══════════════════════════════════════════════════
+function onHandResults(results) {
+  if (!detectionActive) return;
+  if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
+    lastLandmarks = null;
+    holdCount = 0;
+    updateDetectionUI('No hands visible', 0);
+    return;
+  }
+
+  const lm = results.multiHandLandmarks[0];
+  lastLandmarks = lm;
+
+  const target = SIGNS[currentStep];
+  const { detected, confidence } = classifySign(lm, target.detect);
+
+  updateDetectionUI(detected ? target.word : 'Signing…', confidence);
+
+  if (detected && confidence > 0.6) {
+    holdCount++;
+    if (holdCount >= HOLD_FRAMES) {
+      holdCount = 0;
+      handleCorrectSign();
+    }
+  } else {
+    holdCount = 0;
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// SIGN CLASSIFIERS
+// ═══════════════════════════════════════════════════
+function classifySign(lm, type) {
+  switch (type) {
+    case 'wave': return classifyWave(lm);
+    case 'thumbsup': return classifyThumbsUp(lm);
+    default: return { detected: false, confidence: 0 };
+  }
+}
+
+function classifyWave(lm) {
+  // Open hand: all fingers extended, hand relatively flat
+  // lm[0]=wrist, lm[4]=thumb tip, lm[8]=index tip, lm[12]=middle tip, lm[16]=ring tip, lm[20]=pinky tip
+  const wrist = lm[0]; const index = lm[8]; const middle = lm[12]; const ring = lm[16]; const pinky = lm[20];
+  const indexBase = lm[5]; const middleBase = lm[9]; const ringBase = lm[13]; const pinkyBase = lm[17];
+
+  // Check fingers are extended (tips above bases)
+  const indexUp = index.y < indexBase.y - 0.05;
+  const middleUp = middle.y < middleBase.y - 0.05;
+  const ringUp = ring.y < ringBase.y - 0.05;
+  const pinkyUp = pinky.y < pinkyBase.y - 0.05;
+
+  // Thumb not tucked (thumb tip x-distance from wrist)
+  const thumbOpen = Math.abs(lm[4].x - wrist.x) > 0.05;
+
+  const extended = [indexUp, middleUp, ringUp, pinkyUp].filter(Boolean).length;
+  const confidence = (extended / 4) * 0.7 + (thumbOpen ? 0.3 : 0);
+
+  return { detected: extended >= 3 && thumbOpen, confidence };
+}
+
+function classifyThumbsUp(lm) {
+  // Thumb extended up, all other fingers curled
+  const thumbTip = lm[4]; const thumbBase = lm[2];
+  const indexTip = lm[8]; const indexBase = lm[5];
+  const middleTip = lm[12]; const middleBase = lm[9];
+  const ringTip = lm[16]; const ringBase = lm[13];
+  const pinkyTip = lm[20]; const pinkyBase = lm[17];
+
+  // Thumb pointing up
+  const thumbUp = thumbTip.y < thumbBase.y - 0.06;
+
+  // Other fingers curled (tips below or near their bases)
+  const indexCurled = indexTip.y > indexBase.y - 0.02;
+  const middleCurled = middleTip.y > middleBase.y - 0.02;
+  const ringCurled = ringTip.y > ringBase.y - 0.02;
+  const pinkyCurled = pinkyTip.y > pinkyBase.y - 0.02;
+
+  const curled = [indexCurled, middleCurled, ringCurled, pinkyCurled].filter(Boolean).length;
+  const confidence = (thumbUp ? 0.5 : 0) + (curled / 4) * 0.5;
+
+  return { detected: thumbUp && curled >= 3, confidence };
+}
+
+// ═══════════════════════════════════════════════════
+// CANVAS DRAWING
+// ═══════════════════════════════════════════════════
+function drawOverlay() {
+  const canvas = document.getElementById('handCanvas');
+  const video = document.getElementById('userVideo');
+  canvas.width = video.videoWidth || 640;
+  canvas.height = video.videoHeight || 480;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (!lastLandmarks) return;
+
+  const CONNECTIONS = [
+    [0,1],[1,2],[2,3],[3,4],
+    [0,5],[5,6],[6,7],[7,8],
+    [0,9],[9,10],[10,11],[11,12],
+    [0,13],[13,14],[14,15],[15,16],
+    [0,17],[17,18],[18,19],[19,20],
+    [5,9],[9,13],[13,17]
+  ];
+
+  const w = canvas.width, h = canvas.height;
+
+  ctx.strokeStyle = 'rgba(0,229,160,0.7)';
+  ctx.lineWidth = 2;
+  CONNECTIONS.forEach(([a, b]) => {
+    const pa = lastLandmarks[a], pb = lastLandmarks[b];
+    ctx.beginPath();
+    ctx.moveTo((1 - pa.x) * w, pa.y * h);
+    ctx.lineTo((1 - pb.x) * w, pb.y * h);
+    ctx.stroke();
+  });
+
+  lastLandmarks.forEach((pt, i) => {
+    const x = (1 - pt.x) * w, y = pt.y * h;
+    ctx.beginPath();
+    ctx.arc(x, y, i === 0 ? 6 : 4, 0, Math.PI * 2);
+    ctx.fillStyle = i === 0 ? 'rgba(0,229,160,0.9)' : 'rgba(77,166,255,0.8)';
+    ctx.fill();
+  });
+
+  // Hold progress ring
+  if (holdCount > 0 && lastLandmarks[0]) {
+    const cx = (1 - lastLandmarks[0].x) * w;
+    const cy = lastLandmarks[0].y * h;
+    const progress = holdCount / HOLD_FRAMES;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 22, -Math.PI / 2, -Math.PI / 2 + progress * Math.PI * 2);
+    ctx.strokeStyle = 'rgba(0,229,160,0.9)';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// UI UPDATES
+// ═══════════════════════════════════════════════════
+function updateDetectionUI(label, confidence) {
+  const el = document.getElementById('detSign');
+  const conf = document.getElementById('detConf');
+  const fill = document.getElementById('confFill');
+
+  el.className = 'det-sign';
+  el.textContent = label;
+  conf.textContent = `Confidence: ${Math.round(confidence * 100)}%`;
+  fill.style.width = `${confidence * 100}%`;
+  fill.style.background = confidence > 0.6 ? 'var(--green)' : confidence > 0.3 ? 'var(--yellow)' : 'var(--red)';
+}
+
+function setRobotMood(mood) {
+  const mouth = document.getElementById('robotMouth');
+  const arm = document.getElementById('armLeft');
+  if (mood === 'happy') {
+    mouth.setAttribute('d', 'M 65 72 Q 90 86 115 72');
+    arm.classList.remove('waving','showing');
+    void arm.offsetWidth;
+    arm.classList.add('waving');
+  } else if (mood === 'sad') {
+    mouth.setAttribute('d', 'M 65 80 Q 90 68 115 80');
+    arm.classList.remove('waving','showing');
+  } else if (mood === 'teaching') {
+    mouth.setAttribute('d', 'M 68 73 Q 90 79 112 73');
+    arm.classList.remove('waving');
+    arm.classList.add('showing');
+  } else {
+    mouth.setAttribute('d', 'M 68 73 Q 90 82 112 73');
+    arm.classList.remove('waving','showing');
+  }
+}
+
+function speak(text, mood = 'neutral') {
+  document.getElementById('robotSpeech').innerHTML = text;
+  setRobotMood(mood);
+}
+
+function updateChips() {
+  document.querySelectorAll('.word-chip').forEach((chip, i) => {
+    chip.classList.remove('active','correct','wrong');
+    if (i < currentStep) chip.classList.add('correct');
+    else if (i === currentStep) chip.classList.add('active');
+  });
+  document.getElementById('progressFill').style.width = `${(currentStep / SIGNS.length) * 100}%`;
+  document.getElementById('stepLabel').textContent = `Step ${currentStep + 1} of ${SIGNS.length}`;
+}
+
+function updateStats() {
+  document.getElementById('statCorrect').textContent = correct;
+  document.getElementById('statAttempts').textContent = attempts;
+  document.getElementById('statStreak').textContent = streak + (streak >= 3 ? '🔥' : '');
+}
+
+function resetAttemptDots() {
+  document.querySelectorAll('.attempt-dot').forEach(d => d.classList.remove('used'));
+  wrongCount = 0;
+}
+
+function markAttemptFail() {
+  const dot = document.getElementById(`dot${wrongCount}`);
+  if (dot) dot.classList.add('used');
+  wrongCount++;
+}
+
+// ═══════════════════════════════════════════════════
+// LESSON FLOW
+// ═══════════════════════════════════════════════════
+function startLesson() {
+  lessonStarted = true;
+  currentStep = 0;
+  resetAttemptDots();
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('repeatBtn').disabled = false;
+  document.getElementById('skipBtn').disabled = false;
+  updateChips();
+  beginStep();
+}
+
+function beginStep() {
+  const sign = SIGNS[currentStep];
+  document.getElementById('demoEmoji').textContent = sign.emoji;
+  document.getElementById('demoDesc').textContent = sign.desc;
+  speak(sign.ariaIntro, 'teaching');
+  resetAttemptDots();
+
+  setTimeout(() => {
+    detectionActive = true;
+    document.getElementById('detSign').className = 'det-sign detecting';
+    document.getElementById('detSign').textContent = 'Watching your hands…';
+  }, 2000);
+}
+
+function handleCorrectSign() {
+  if (!lessonStarted) return;
+  detectionActive = false;
+  attempts++;
+  correct++;
+  streak++;
+  updateStats();
+
+  const sign = SIGNS[currentStep];
+  const chip = document.getElementById(`chip${currentStep}`);
+  chip.classList.remove('active','wrong');
+  chip.classList.add('correct');
+
+  speak(sign.ariaCorrect, 'happy');
+  updateDetectionUI('✓ ' + sign.word, 1);
+
+  setTimeout(() => {
+    currentStep++;
+    if (currentStep >= SIGNS.length) {
+      showWin();
+    } else {
+      updateChips();
+      beginStep();
+    }
+  }, 2200);
+}
+
+function handleWrongSign() {
+  if (!lessonStarted) return;
+  detectionActive = false;
+  attempts++;
+  streak = 0;
+  markAttemptFail();
+  updateStats();
+
+  const sign = SIGNS[currentStep];
+  const chip = document.getElementById(`chip${currentStep}`);
+  chip.classList.add('wrong');
+
+  if (wrongCount >= 2) {
+    speak(sign.ariaHint, 'teaching');
+  } else {
+    speak(sign.ariaWrong, 'sad');
+  }
+
+  setTimeout(() => {
+    chip.classList.remove('wrong');
+    chip.classList.add('active');
+    detectionActive = true;
+    document.getElementById('detSign').className = 'det-sign detecting';
+    document.getElementById('detSign').textContent = 'Watching your hands…';
+  }, 3000);
+}
+
+function repeatDemo() {
+  if (!lessonStarted) return;
+  detectionActive = false;
+  const sign = SIGNS[currentStep];
+  speak(`Let me show you again — <strong>${sign.word}</strong>. ${sign.desc}`, 'teaching');
+  setTimeout(() => { detectionActive = true; }, 2500);
+}
+
+function markCorrect() {
+  if (!lessonStarted) return;
+  handleCorrectSign();
+}
+
+function showWin() {
+  document.getElementById('progressFill').style.width = '100%';
+  setTimeout(() => { document.getElementById('winScreen').classList.add('show'); }, 500);
+}
+
+function restartLesson() {
+  document.getElementById('winScreen').classList.remove('show');
+  currentStep = 0; attempts = 0; correct = 0; streak = 0;
+  lessonStarted = false;
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('repeatBtn').disabled = true;
+  document.getElementById('skipBtn').disabled = true;
+  document.querySelectorAll('.word-chip').forEach(c => c.classList.remove('active','correct','wrong'));
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('detSign').className = 'det-sign detecting';
+  document.getElementById('detSign').textContent = 'Watching your hands…';
+  updateStats();
+  speak('Let\'s go again! Click Start when you\'re ready. You\'ve got this! 💪', 'happy');
+  resetAttemptDots();
+}
+
+// AUTO-WRONG CHECKER: if hand is visible but wrong for 2s, flag it
+let wrongCheckTimer = null;
+setInterval(() => {
+  if (!detectionActive || !lessonStarted || !lastLandmarks) return;
+  const target = SIGNS[currentStep];
+  const { detected } = classifySign(lastLandmarks, target.detect);
+  if (!detected) {
+    if (!wrongCheckTimer) {
+      wrongCheckTimer = setTimeout(() => {
+        wrongCheckTimer = null;
+        if (!detectionActive || !lastLandmarks) return;
+        const { detected: d2 } = classifySign(lastLandmarks, target.detect);
+        if (!d2) handleWrongSign();
+      }, 4000);
+    }
+  } else {
+    clearTimeout(wrongCheckTimer);
+    wrongCheckTimer = null;
+  }
+}, 500);
+
+// Initial state
+speak('Hi! I\'m Aria, your BSL tutor. Let\'s learn to sign <strong>"Hello, How are you?"</strong> Enable your camera, then click Start! 👋', 'neutral');
+</script>
+
+</body>
+</html>

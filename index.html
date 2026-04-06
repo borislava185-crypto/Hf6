@@ -197,10 +197,10 @@ border-radius:14px;font-size:1rem;font-weight:900;cursor:pointer;font-family:‘
       <div class="steps-box">
         <div class="steps-lbl" id="stepsLbl">How to sign: Hello</div>
         <div id="stepsBody">
-          <div class="step">1. Raise hand to <b>side of your head</b></div>
-          <div class="step">2. Hand open flat, fingers pointing up</div>
-          <div class="step">3. Palm facing <b>forward</b> toward the person</div>
-          <div class="step">4. Wave wrist in a smooth arc — left then right</div>
+          <div class="step">1. <b>Dominant hand</b> flat and open, fingers together</div>
+          <div class="step">2. Bring hand up to your <b>forehead / temple</b></div>
+          <div class="step">3. Make a small quick <b>salute-like flick</b> outward and away</div>
+          <div class="step">4. 😊 Pair with a <b>friendly smile</b> and eye contact</div>
         </div>
       </div>
     </div>
@@ -305,28 +305,26 @@ border-radius:14px;font-size:1rem;font-weight:900;cursor:pointer;font-family:‘
 const SIGNS = [
   {
     word: 'Hello',
-    detect: 'wave',
-    // Your actual video file in the same GitHub repo
+    detect: 'salute',
     video: 'ScreenRecording_04-06-2026 15-01-35_1.mov',
     stepsLbl: 'How to sign: Hello',
     steps: [
-      '1. Raise hand to <b>side of your head</b>',
-      '2. Hand open flat, fingers pointing up',
-      '3. Palm facing <b>forward</b> toward the person',
-      '4. Wave wrist in a smooth arc — left then right',
+      '1. <b>Dominant hand</b> flat and open, fingers together',
+      '2. Bring hand up to your <b>forehead / temple</b>',
+      '3. Make a small quick <b>salute-like flick</b> outward and away',
+      '4. 😊 Pair with a <b>friendly smile</b> and eye contact',
     ],
   },
   {
     word: 'How are you?',
-    detect: 'thumbsup',
-    // Your actual video file in the same GitHub repo
+    detect: 'chest_out',
     video: 'ScreenRecording_04-06-2026 15-06-37_1.mov',
     stepsLbl: 'How to sign: How are you?',
     steps: [
-      '1. Make a <b>closed fist</b> with your dominant hand',
-      '2. Thumb pointing <b>straight up</b>',
-      '3. Hold at chest height',
-      '4. <b>Thrust it forward</b> firmly toward the person',
+      '1. Place <b>both flat hands</b> on your chest, palms facing you',
+      '2. Slide fingertips <b>upward then outward</b> toward the person',
+      '3. Finish with both hands in a <b>thumbs-up position</b>',
+      '4. 🤨 Raise eyebrows slightly and <b>tilt head forward</b> — that\'s the question!',
     ],
   },
 ];
@@ -357,25 +355,25 @@ function replayVid() {
 // ARIA MESSAGES
 // ═══════════════════════════════════════════
 const TUTOR = {
-  wave: {
-    intro: `Watch the video carefully, then copy the <strong>Hello</strong> sign! Open hand beside your head, palm facing me, smooth wrist wave. You've got this! 👋`,
-    success: `Perfect BSL Hello! 🎉 Open hand beside your head, palm forward, smooth wrist wave. Spot on! Now "How are you?"`,
+  salute: {
+    intro: `Watch the video then copy <strong>Hello</strong>! Flat open hand, bring it to your forehead, then flick it outward like a salute. Add a smile! 👋`,
+    success: `Perfect BSL Hello! 🎉 Flat hand, temple, quick outward flick — and that smile made it! Now let's try "How are you?"`,
     wrong: [
-      `Not quite! Keep your hand <strong>completely open</strong> — all fingers spread and pointing up — beside your head, palm facing me. Then wave the wrist.`,
-      `Try again! Three checks:<br>• Palm facing <strong>toward me</strong> — not sideways<br>• Hand at <strong>head/temple level</strong><br>• All fingers <strong>open and straight</strong>`,
-      `Watch the video one more time — notice exactly where the hand is. Beside the head, palm forward, fingers open, one sweeping wrist wave. Then try again!`,
+      `Not quite! Use your <strong>dominant hand flat and open</strong>, bring it up to your <strong>forehead/temple</strong>, then flick it outward away from your head — like a quick salute.`,
+      `Check these:<br>• Hand is <b>flat and open</b>, fingers together<br>• Start at your <b>temple</b> (side of forehead)<br>• Flick <b>outward and away</b> — quick and clean`,
+      `Watch the video one more time — it's a small, quick salute-like movement. Start at the temple, flick outward. Try again!`,
     ],
-    hint: `💡 Think of waving to a friend far away — hand up beside your head, palm out, one smooth left-right sweep from the wrist only!`,
+    hint: `💡 Think of a quick, friendly salute — flat hand to your temple, then one clean flick outward. Keep fingers together and add a smile!`,
   },
-  thumbsup: {
-    intro: `Great work! Now watch the <strong>"How are you?"</strong> video — closed fist, thumb straight up, thrust forward. You can do it! 🤙`,
-    success: `Amazing!! That's BSL "How are you?" — thumbs-up fist pushed forward confidently. You signed the full phrase! 🌟`,
+  chest_out: {
+    intro: `Now <strong>"How are you?"</strong> — both flat hands on your chest, slide upward then outward, finish with thumbs up. Raise your eyebrows for the question! 🤙`,
+    success: `Amazing!! That's BSL "How are you?" — chest to outward sweep to thumbs up, with questioning eyebrows. You signed the full phrase! 🌟`,
     wrong: [
-      `Not quite! You need a <strong>closed fist with thumb up</strong> — curl ALL four fingers into your palm, thumb pointing straight up, then push forward firmly.`,
-      `Remember — tight closed fist, thumb up, one firm forward push:<br>• All fingers <strong>curled in</strong><br>• Thumb pointing <strong>straight up</strong><br>• Push <strong>forward</strong> toward camera`,
-      `Watch the video one more time — see how the fist pushes directly forward? Short, firm, confident. Try again!`,
+      `Not quite! Start with <strong>both flat hands on your chest</strong>, palms facing you. Then slide your fingertips upward and outward, finishing with a thumbs-up shape.`,
+      `Remember the three parts:<br>• <b>Both hands flat on chest</b> to start<br>• Slide <b>upward then outward</b><br>• Finish in <b>thumbs-up</b> and raise your eyebrows!`,
+      `Watch the video again — notice it starts at the chest with both hands, sweeps outward, and ends thumbs up. The eyebrow raise is important too — that's what makes it a question in BSL!`,
     ],
-    hint: `💡 Make the biggest clearest thumbs-up you can — then push that whole fist forward toward the camera. Bold and confident!`,
+    hint: `💡 Two hands on chest → sweep up and out → thumbs up at the end. Raise your eyebrows and tilt your head slightly forward. That eyebrow raise is the question mark in BSL!`,
   },
 };
 
@@ -435,16 +433,26 @@ function onHands(res){
 }
 
 function classify(lm,type){
-  if(type==='wave'){
-    const iU=lm[8].y<lm[5].y-0.04,mU=lm[12].y<lm[9].y-0.04,rU=lm[16].y<lm[13].y-0.04,pU=lm[20].y<lm[17].y-0.04;
-    const tO=Math.abs(lm[4].x-lm[0].x)>0.04,raised=lm[0].y<0.6;
+  if(type==='salute'){
+    // Flat open hand raised to head level (wrist high in frame, fingers extended upward)
+    const iU=lm[8].y<lm[5].y-0.04, mU=lm[12].y<lm[9].y-0.04;
+    const rU=lm[16].y<lm[13].y-0.04, pU=lm[20].y<lm[17].y-0.04;
+    const tO=Math.abs(lm[4].x-lm[0].x)>0.03;
+    // Hand raised high — wrist in upper third of frame
+    const raised=lm[0].y<0.45;
     const ext=[iU,mU,rU,pU].filter(Boolean).length;
-    return{det:ext>=3&&tO,conf:Math.min((ext/4)*0.6+(tO?0.2:0)+(raised?0.2:0),1)};
+    return{det:ext>=3&&tO&&raised, conf:Math.min((ext/4)*0.5+(tO?0.15:0)+(raised?0.35:0),1)};
   }
-  if(type==='thumbsup'){
+  if(type==='chest_out'){
+    // Thumbs up shape — used as finish position detector
+    // Both hands ideally but MediaPipe gives one — detect thumb up with fingers curled
     const tU=lm[4].y<lm[3].y-0.04;
-    const c=[lm[8].y>lm[5].y-0.01,lm[12].y>lm[9].y-0.01,lm[16].y>lm[13].y-0.01,lm[20].y>lm[17].y-0.01].filter(Boolean).length;
-    return{det:tU&&c>=3,conf:(tU?0.5:0)+(c/4)*0.5};
+    const iC=lm[8].y>lm[5].y-0.01, mC=lm[12].y>lm[9].y-0.01;
+    const rC=lm[16].y>lm[13].y-0.01, pC=lm[20].y>lm[17].y-0.01;
+    const curled=[iC,mC,rC,pC].filter(Boolean).length;
+    // Hand should be at mid-frame or lower (chest/outward position)
+    const midLevel=lm[0].y>0.3;
+    return{det:tU&&curled>=3&&midLevel, conf:(tU?0.45:0)+(curled/4)*0.4+(midLevel?0.15:0)};
   }
   return{det:false,conf:0};
 }

@@ -142,8 +142,8 @@ border:1.5px solid var(–border);border-radius:14px;overflow:hidden}
 .st-n{font-weight:900;font-size:1.3rem;color:var(–orange);line-height:1}
 .st-l{font-size:.58rem;color:var(–muted);text-transform:uppercase;letter-spacing:.07em;font-weight:800;margin-top:.15rem}
 
-/* ══ RIGHT: Camera + Detection ══ */
-.cam-card{flex:1;position:relative;min-height:0;border-radius:14px;overflow:hidden;background:#000}
+/* ══ RIGHT: Camera ══ */
+.cam-card{flex:1;position:relative;min-height:0;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:unset}
 .cam-top{position:absolute;top:0;left:0;right:0;padding:.5rem .8rem;
 background:rgba(26,18,16,.88);backdrop-filter:blur(6px);
 display:flex;align-items:center;justify-content:space-between;z-index:5}
@@ -163,15 +163,15 @@ pointer-events:none;z-index:4;display:none;animation:sg 2s ease-in-out infinite}
 .sov.on{display:block}
 @keyframes sg{0%,100%{border-color:rgba(255,140,66,.2)}50%{border-color:rgba(255,140,66,.75)}}
 
-/* Detection — bigger, in middle column */
-.det-card{padding:.9rem 1.1rem;flex-shrink:0;border:1.5px solid rgba(255,140,66,.25)!important;}
-.det-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem}
-.det-lbl{font-size:.65rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(–muted)}
-.det-val{font-weight:900;font-size:1.4rem;color:var(–text);transition:all .3s}
-.det-val.idle{font-size:.85rem;color:var(–muted);font-weight:700}
-.det-conf{font-size:.75rem;color:var(–muted);font-weight:700;margin-bottom:.5rem}
-.cbar{height:8px;background:rgba(255,255,255,.07);border-radius:5px;overflow:hidden}
-.cfill{height:100%;border-radius:5px;background:var(–orange);transition:width .3s;width:0}
+/* Detection — compact, in middle column */
+.det-card{padding:.65rem .9rem;flex-shrink:0;border:1.5px solid rgba(255,140,66,.25)!important;}
+.det-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem}
+.det-lbl{font-size:.6rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(–muted)}
+.det-val{font-weight:900;font-size:1.1rem;color:var(–text);transition:all .3s}
+.det-val.idle{font-size:.75rem;color:var(–muted);font-weight:700}
+.det-conf{font-size:.68rem;color:var(–muted);font-weight:700;margin-bottom:.35rem}
+.cbar{height:6px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden}
+.cfill{height:100%;border-radius:4px;background:var(–orange);transition:width .3s;width:0}
 
 /* WIN */
 .win{position:fixed;inset:0;background:rgba(26,18,16,.97);display:none;
@@ -261,16 +261,6 @@ html,body{height:auto;overflow:auto}
   <button class="btn btn-g" id="sb" onclick="startLesson()">▶ Start</button>
   <button class="btn btn-o" id="rb" onclick="replayVid()" disabled>↺ Replay</button>
   <button class="btn btn-o" id="gb" onclick="gotIt()" disabled>✓ Got It</button>
-</div>
-
-<!-- DETECTION — moved here so it's central and visible -->
-<div class="card det-card">
-  <div class="det-top">
-    <span class="det-lbl">🖐 Hand Detection</span>
-    <span class="det-val idle" id="dt">Enable camera…</span>
-  </div>
-  <div class="det-conf" id="dc">Confidence: —</div>
-  <div class="cbar"><div class="cfill" id="cf"></div></div>
 </div>
 
 <!-- STATS -->

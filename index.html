@@ -401,7 +401,7 @@ function ariaMsg(text, type='norm') {
 // MEDIAPIPE
 // ═══════════════════════════════════════════
 let mpH=null, lastLM=null, detActive=false, holdCnt=0;
-const HOLD=22;
+const HOLD=12;
 let wrongTimer=null;
 
 async function startCam(){
@@ -413,9 +413,14 @@ async function startCam(){
     document.getElementById('cd').classList.add('on');
     document.getElementById('so').classList.add('on');
     mpH=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-    mpH.setOptions({maxNumHands:1,modelComplexity:1,minDetectionConfidence:0.72,minTrackingConfidence:0.65});
+    mpH.setOptions({maxNumHands:1,modelComplexity:0,minDetectionConfidence:0.6,minTrackingConfidence:0.5});
     mpH.onResults(onHands);
-    const cam=new Camera(vid,{onFrame:async()=>{await mpH.send({image:vid});drawOv();},width:640,height:480});
+    // Throttle to every other frame to prevent freezing on mobile
+    let frameCount=0;
+    const cam=new Camera(vid,{onFrame:async()=>{
+      frameCount++;
+      if(frameCount%2===0){ await mpH.send({image:vid}); drawOv(); }
+    },width:320,height:240});
     cam.start();
     document.getElementById('dt').className='det-big idle';
     document.getElementById('dt').textContent='Watching your hands…';
@@ -428,7 +433,7 @@ function onHands(res){
   const lm=res.multiHandLandmarks[0];lastLM=lm;
   const{det,conf}=classify(lm,SIGNS[step].detect);
   detUI(det?SIGNS[step].word:'Signing…',conf);
-  if(det&&conf>0.6){holdCnt++;if(holdCnt>=HOLD){holdCnt=0;doCorrect();}}
+  if(det&&conf>0.5){holdCnt++;if(holdCnt>=HOLD){holdCnt=0;doCorrect();}}
   else holdCnt=0;
 }
 
@@ -572,7 +577,7 @@ function restart(){
 setInterval(()=>{
   if(!detActive||!started||!lastLM)return;
   if(!classify(lastLM,SIGNS[step].detect).det){
-    if(!wrongTimer)wrongTimer=setTimeout(()=>{wrongTimer=null;if(!detActive||!lastLM)return;if(!classify(lastLM,SIGNS[step].detect).det)doWrong();},5000);
+    if(!wrongTimer)wrongTimer=setTimeout(()=>{wrongTimer=null;if(!detActive||!lastLM)return;if(!classify(lastLM,SIGNS[step].detect).det)doWrong();},7000);
   }else{clearTimeout(wrongTimer);wrongTimer=null;}
 },500);
 </script>

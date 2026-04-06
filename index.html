@@ -35,54 +35,59 @@ grid-template-columns:1fr 270px 1fr;gap:.7rem;padding:.7rem;min-height:0;overflo
 /* ── LEFT COL ── */
 .left-col{display:flex;flex-direction:column;gap:.7rem;min-height:0}
 
-/* VIDEO CARD */
-.video-card{background:var(–card);border:1px solid var(–border);border-radius:18px;overflow:hidden;flex-shrink:0}
-.video-top{padding:.55rem 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(–border)}
-.vtitle{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(–green)}
-.vtabs{display:flex;gap:.4rem}
-.vtab{font-size:.68rem;font-weight:800;padding:.25rem .7rem;border-radius:8px;
-border:1.5px solid var(–border);background:transparent;color:var(–muted);
-cursor:pointer;transition:all .2s;font-family:‘Nunito’,sans-serif}
-.vtab.on{border-color:var(–green);background:rgba(46,204,113,.12);color:var(–green)}
+/* VIDEO PREVIEW CARD */
+.vid-card{background:var(–card);border:1px solid var(–border);border-radius:18px;overflow:hidden;flex-shrink:0}
+.vid-top{padding:.6rem 1rem;border-bottom:1px solid var(–border);
+display:flex;align-items:center;justify-content:space-between}
+.vid-title{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(–green)}
 
-/* VIDEO PLAYER AREA */
-.vplayer{background:#000;position:relative;width:100%;min-height:180px;display:flex;align-items:center;justify-content:center}
-.vplayer video{width:100%;display:block;max-height:220px;object-fit:contain;background:#000}
-.vplayer .vfallback{display:none;flex-direction:column;align-items:center;gap:.8rem;padding:1.5rem;text-align:center}
-.vplayer.failed .vfallback{display:flex}
-.vplayer.failed video{display:none}
-.vfallback p{font-size:.78rem;color:var(–muted);font-weight:700;line-height:1.6}
-.vfallback a{display:inline-block;background:var(–green);color:#0a1a0f;padding:.5rem 1.2rem;
-border-radius:9px;font-weight:900;font-size:.78rem;text-decoration:none}
+/* Sign preview boxes */
+.sign-previews{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.65rem}
+.sign-preview{background:rgba(255,255,255,.03);border:1.5px solid var(–border);
+border-radius:13px;padding:.7rem;cursor:pointer;transition:all .2s;text-align:center}
+.sign-preview:hover{border-color:var(–green);background:rgba(46,204,113,.08);transform:translateY(-1px)}
+.sign-preview.active{border-color:var(–green);background:rgba(46,204,113,.12)}
+.sp-emoji{font-size:2rem;display:block;margin-bottom:.3rem}
+.sp-name{font-weight:900;font-size:.82rem;color:var(–text);display:block;margin-bottom:.25rem}
+.sp-desc{font-size:.62rem;color:var(–muted);font-weight:700;line-height:1.4;display:block;margin-bottom:.5rem}
+.sp-btn{display:inline-flex;align-items:center;gap:.35rem;
+background:var(–green);color:#0a1a0f;border:none;
+padding:.35rem .8rem;border-radius:8px;font-size:.7rem;font-weight:900;
+cursor:pointer;font-family:‘Nunito’,sans-serif;text-decoration:none;transition:all .2s}
+.sp-btn:hover{background:#27ae60;transform:scale(1.03)}
 
-.vloading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-background:rgba(18,15,30,.8);font-size:.75rem;color:var(–muted);font-weight:700;gap:.5rem}
-.vloading.hidden{display:none}
-.vspin{width:16px;height:16px;border:2px solid rgba(46,204,113,.3);border-top-color:var(–green);
-border-radius:50%;animation:sp .7s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
+/* How-to steps */
+.howto{padding:.5rem .65rem .65rem;border-top:1px solid var(–border)}
+.howto-title{font-size:.58rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(–muted);margin-bottom:.4rem}
+.steps{display:flex;flex-direction:column;gap:.2rem}
+.step{font-size:.7rem;font-weight:700;color:var(–text);line-height:1.5;padding:.15rem 0}
+.step span{color:var(–green)}
 
-/* TUTOR BUBBLE */
+/* ARIA TUTOR */
 .tutor-bubble{background:var(–card);border:1px solid var(–border);border-radius:18px;
 padding:.85rem 1rem;flex:1;display:flex;flex-direction:column;gap:.55rem;overflow:hidden;min-height:0}
 .tutor-top{display:flex;align-items:center;gap:.65rem;flex-shrink:0}
 .avatar{width:42px;height:42px;border-radius:50%;flex-shrink:0;
 background:linear-gradient(135deg,#7c3aed,#2ecc71);
-display:flex;align-items:center;justify-content:center;font-size:1.25rem;
-border:2px solid rgba(46,204,113,.35)}
-.tutor-name{font-weight:900;font-size:.82rem;color:var(–green)}
-.tutor-role{font-size:.58rem;color:var(–muted);font-weight:700}
+display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+border:2px solid rgba(46,204,113,.4);position:relative}
+.avatar::after{content:’’;position:absolute;inset:-3px;border-radius:50%;
+border:2px solid rgba(46,204,113,.2);animation:ring 2.5s ease-in-out infinite}
+@keyframes ring{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.8;transform:scale(1.06)}}
+.tutor-info .tname{font-weight:900;font-size:.85rem;color:var(–green)}
+.tutor-info .trole{font-size:.58rem;color:var(–muted);font-weight:700}
 .sdot{width:6px;height:6px;border-radius:50%;background:var(–green);
 display:inline-block;animation:bl 2s infinite;margin-right:.3rem}
 @keyframes bl{0%,100%{opacity:1}50%{opacity:.3}}
 
 .msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;min-height:0}
-.msgs::-webkit-scrollbar{width:3px}.msgs::-webkit-scrollbar-thumb{background:rgba(46,204,113,.3);border-radius:2px}
-.msg{padding:.6rem .8rem;border-radius:11px;font-size:.76rem;line-height:1.65;font-weight:600;border:1.5px solid transparent}
+.msgs::-webkit-scrollbar{width:3px}
+.msgs::-webkit-scrollbar-thumb{background:rgba(46,204,113,.3);border-radius:2px}
+.msg{padding:.6rem .85rem;border-radius:12px;font-size:.76rem;line-height:1.65;font-weight:600;border:1.5px solid transparent}
 .msg.norm{background:rgba(46,204,113,.07);border-color:rgba(46,204,113,.18)}
 .msg.bad{background:rgba(231,76,60,.08);border-color:rgba(231,76,60,.22);color:#ffb3ae}
 .msg.good{background:rgba(46,204,113,.14);border-color:rgba(46,204,113,.38);color:#b0ffd4}
-.typing{display:flex;gap:4px;align-items:center;padding:.45rem .8rem}
+.typing{display:flex;gap:4px;align-items:center;padding:.45rem .85rem}
 .tdot{width:7px;height:7px;border-radius:50%;background:var(–green);opacity:.4;animation:td .9s ease-in-out infinite}
 .tdot:nth-child(2){animation-delay:.15s}.tdot:nth-child(3){animation-delay:.3s}
 @keyframes td{0%,100%{opacity:.4;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
@@ -108,7 +113,8 @@ transition:all .3s;position:relative;overflow:hidden;cursor:pointer;user-select:
 .pfill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(–green),#27ae60);transition:width .5s;width:0}
 .prow{display:flex;justify-content:space-between;margin-top:.4rem;font-size:.63rem;color:var(–muted);font-weight:700}
 .pdots{display:flex;gap:3px}
-.pd{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.12);transition:all .2s}.pd.x{background:var(–red)}
+.pd{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.12);transition:all .2s}
+.pd.x{background:var(–red)}
 
 .det-card{background:var(–card);border:1px solid var(–border);border-radius:18px;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.4rem}
 .det-big{font-weight:900;font-size:1.3rem;min-height:1.7rem;transition:all .3s}
@@ -129,33 +135,40 @@ transition:all .3s;position:relative;overflow:hidden;cursor:pointer;user-select:
 .st-l{font-size:.56rem;color:var(–muted);text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-top:.1rem}
 
 /* ── CAMERA ── */
+.right-col{display:flex;flex-direction:column;gap:.7rem}
 .cam-card{background:var(–card);border:1px solid var(–border);border-radius:18px;overflow:hidden;position:relative;flex:1;min-height:0}
 .cam-top{position:absolute;top:0;left:0;right:0;padding:.5rem .85rem;
 background:rgba(18,15,30,.85);backdrop-filter:blur(6px);
 display:flex;align-items:center;justify-content:space-between;z-index:5;font-size:.68rem}
 .clive{display:flex;align-items:center;gap:.4rem;color:var(–muted);font-weight:800}
-.cdot{width:6px;height:6px;border-radius:50%;background:var(–red);animation:bl 1s infinite}.cdot.on{background:var(–green)}
+.cdot{width:6px;height:6px;border-radius:50%;background:var(–red);animation:bl 1s infinite}
+.cdot.on{background:var(–green)}
 #uv{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}
 #hcvs{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;transform:scaleX(-1)}
-.cov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(18,15,30,.92);z-index:4;gap:.8rem}
+.cov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+justify-content:center;background:rgba(18,15,30,.92);z-index:4;gap:.8rem}
 .cov.hidden{display:none}
 .cov p{font-size:.78rem;color:var(–muted);text-align:center;max-width:180px;line-height:1.6;font-weight:700}
-.bcam{background:var(–green);color:#0a1a0f;border:none;padding:.52rem 1.3rem;border-radius:10px;font-size:.8rem;font-weight:900;cursor:pointer;font-family:‘Nunito’,sans-serif}
-.sov{position:absolute;inset:13px;border:2px solid rgba(46,204,113,.3);border-radius:11px;pointer-events:none;z-index:4;display:none;animation:sg 2s ease-in-out infinite}
+.bcam{background:var(–green);color:#0a1a0f;border:none;padding:.52rem 1.3rem;
+border-radius:10px;font-size:.8rem;font-weight:900;cursor:pointer;font-family:‘Nunito’,sans-serif}
+.sov{position:absolute;inset:13px;border:2px solid rgba(46,204,113,.3);border-radius:11px;
+pointer-events:none;z-index:4;display:none;animation:sg 2s ease-in-out infinite}
 .sov.on{display:block}
 @keyframes sg{0%,100%{border-color:rgba(46,204,113,.2)}50%{border-color:rgba(46,204,113,.65)}}
+.hold-note{background:var(–card);border:1px solid var(–border);border-radius:12px;
+padding:.5rem .9rem;font-size:.67rem;color:var(–muted);font-weight:700;text-align:center}
 
 /* WIN */
-.win{position:fixed;inset:0;background:rgba(18,15,30,.97);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:200;gap:1rem}
+.win{position:fixed;inset:0;background:rgba(18,15,30,.97);display:none;
+flex-direction:column;align-items:center;justify-content:center;z-index:200;gap:1rem}
 .win.show{display:flex;animation:fi .4s ease}
 @keyframes fi{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 .trophy{font-size:5rem;animation:bop .65s ease infinite alternate}
 @keyframes bop{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-16px) rotate(4deg)}}
 .win-t{font-weight:900;font-size:2.2rem;color:var(–green)}
 .win-s{color:var(–muted);font-weight:700;text-align:center;line-height:1.6}
-.brst{background:var(–green);color:#0a1a0f;border:none;padding:.85rem 2.2rem;border-radius:14px;font-size:1rem;font-weight:900;cursor:pointer;font-family:‘Nunito’,sans-serif;margin-top:.5rem}
-
-.right-col{display:flex;flex-direction:column;gap:.7rem}
+.brst{background:var(–green);color:#0a1a0f;border:none;padding:.85rem 2.2rem;
+border-radius:14px;font-size:1rem;font-weight:900;cursor:pointer;font-family:‘Nunito’,sans-serif;margin-top:.5rem}
 
 @media(max-width:900px){.app{grid-template-columns:1fr;overflow-y:auto}html,body{height:auto;overflow:auto}}
 </style>
@@ -165,51 +178,67 @@ display:flex;align-items:center;justify-content:space-between;z-index:5;font-siz
 
 <header>
   <div class="logo">Sign<span>Bot</span></div>
-  <div class="hbadge">Real BSL Videos · AI Tutor</div>
+  <div class="hbadge">Real BSL · AI Tutor</div>
   <div style="font-size:.65rem;color:var(--muted);font-weight:800">British Sign Language</div>
 </header>
 
 <div class="app">
 
-  <!-- LEFT: VIDEO + ARIA -->
+  <!-- LEFT: SIGN GUIDE + ARIA -->
 
   <div class="left-col">
 
 ```
-<div class="video-card">
-  <div class="video-top">
-    <span class="vtitle">📹 Real BSL — Watch First</span>
-    <div class="vtabs">
-      <button class="vtab on" onclick="switchVideo('hello',this)">👋 Hello</button>
-      <button class="vtab" onclick="switchVideo('hay',this)">🤙 How are you?</button>
+<div class="vid-card">
+  <div class="vid-top">
+    <span class="vid-title">📹 Watch Real BSL First</span>
+  </div>
+
+  <div class="sign-previews">
+    <!-- HELLO -->
+    <div class="sign-preview" id="prev0">
+      <span class="sp-emoji">👋</span>
+      <span class="sp-name">Hello</span>
+      <span class="sp-desc">Open hand beside your head, palm forward, wave the wrist</span>
+      <a class="sp-btn" href="https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=8s" target="_blank" rel="noopener">
+        ▶ Watch on YouTube
+      </a>
+    </div>
+    <!-- HOW ARE YOU -->
+    <div class="sign-preview" id="prev1">
+      <span class="sp-emoji">🤙</span>
+      <span class="sp-name">How are you?</span>
+      <span class="sp-desc">Closed fist, thumb up, thrust forward firmly</span>
+      <a class="sp-btn" href="https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=198s" target="_blank" rel="noopener">
+        ▶ Watch on YouTube
+      </a>
     </div>
   </div>
-  <div class="vplayer" id="vplayer">
-    <div class="vloading" id="vload"><div class="vspin"></div> Loading video…</div>
-    <video id="bslVid" controls playsinline autoplay muted loop
-      style="width:100%;display:block;max-height:220px;object-fit:contain;background:#000">
-    </video>
-    <!-- Fallback shown if video fails to load -->
-    <div class="vfallback">
-      <div style="font-size:2rem">📹</div>
-      <p>Video couldn't load directly.<br>Watch on SignBSL.com instead:</p>
-      <a id="fallbackLink" href="https://www.signbsl.com/sign/hello" target="_blank" rel="noopener">Watch Hello on SignBSL ↗</a>
+
+  <!-- Step-by-step for current sign -->
+  <div class="howto" id="howtoBox">
+    <div class="howto-title" id="howtoLabel">How to sign: Hello</div>
+    <div class="steps" id="howtoSteps">
+      <div class="step"><span>1.</span> Raise your dominant hand to the side of your head</div>
+      <div class="step"><span>2.</span> Open hand flat — all fingers together pointing up</div>
+      <div class="step"><span>3.</span> Palm facing forward toward the person</div>
+      <div class="step"><span>4.</span> Wave your wrist in one smooth arc — left then right</div>
     </div>
   </div>
 </div>
 
-<!-- ARIA TUTOR -->
+<!-- ARIA -->
 <div class="tutor-bubble">
   <div class="tutor-top">
     <div class="avatar">🤖</div>
-    <div>
-      <div class="tutor-name">Aria <span class="sdot"></span></div>
-      <div class="tutor-role">BSL AI Tutor</div>
+    <div class="tutor-info">
+      <div class="tname"><span class="sdot"></span>Aria</div>
+      <div class="trole">BSL AI Tutor</div>
     </div>
   </div>
   <div class="msgs" id="msgs">
     <div class="msg norm">
-      Hi! I'm Aria 👋 Watch the <strong>real BSL video</strong> on the left first, then press <em>Start</em> and copy the sign on camera. I'll watch you and give feedback!
+      Hi! I'm Aria 👋 <strong>Watch the BSL video on YouTube first</strong>, then press Start and copy the sign on your camera. I'll give you feedback!
     </div>
   </div>
 </div>
@@ -223,13 +252,17 @@ display:flex;align-items:center;justify-content:space-between;z-index:5;font-siz
     <div class="phrase-card">
       <div class="clbl">Phrase to sign</div>
       <div class="chips">
-        <div class="chip" id="chip0" onclick="switchVideo('hello',null)"><div class="cnum">1</div><span>Hello</span></div>
-        <div class="chip" id="chip1" onclick="switchVideo('hay',null)"><div class="cnum">2</div><span>How are you?</span></div>
+        <div class="chip" id="chip0"><div class="cnum">1</div><span>Hello</span></div>
+        <div class="chip" id="chip1"><div class="cnum">2</div><span>How are you?</span></div>
       </div>
       <div class="pbar"><div class="pfill" id="pf"></div></div>
       <div class="prow">
         <span id="slbl">Step 1 of 2</span>
-        <div class="pdots"><div class="pd" id="pd0"></div><div class="pd" id="pd1"></div><div class="pd" id="pd2"></div></div>
+        <div class="pdots">
+          <div class="pd" id="pd0"></div>
+          <div class="pd" id="pd1"></div>
+          <div class="pd" id="pd2"></div>
+        </div>
       </div>
     </div>
 
@@ -243,7 +276,7 @@ display:flex;align-items:center;justify-content:space-between;z-index:5;font-siz
 
 <div class="btns">
   <button class="btn btn-g" id="sb" onclick="startLesson()">▶ Start</button>
-  <button class="btn btn-o" id="rb" onclick="replayVid()" disabled>📹 Replay</button>
+  <button class="btn btn-o" id="rb" onclick="watchAgain()" disabled>📹 Watch Again</button>
   <button class="btn btn-o" id="gb" onclick="gotIt()" disabled style="font-size:.7rem">✓ Got It</button>
 </div>
 
@@ -262,23 +295,23 @@ display:flex;align-items:center;justify-content:space-between;z-index:5;font-siz
     <div class="cam-card">
       <div class="cam-top">
         <span class="clive"><span class="cdot" id="cd"></span> Your Camera</span>
-        <span style="color:var(--muted);font-weight:800;font-size:.65rem">MediaPipe</span>
+        <span style="color:var(--muted);font-weight:800;font-size:.62rem">MediaPipe Hands</span>
       </div>
       <video id="uv" autoplay playsinline muted></video>
       <canvas id="hcvs"></canvas>
       <div class="sov" id="so"></div>
       <div class="cov" id="co">
         <div style="font-size:2rem">🤲</div>
-        <p>Enable camera so Aria can watch your signs</p>
+        <p>Enable camera so Aria can watch your hands</p>
         <button class="bcam" onclick="startCam()">Enable Camera</button>
       </div>
     </div>
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.5rem .9rem;font-size:.67rem;color:var(--muted);font-weight:700;text-align:center">
-      Hold your sign steady for ~1 second to confirm ✊
-    </div>
+    <div class="hold-note">Hold your sign steady for ~1 second to confirm ✊</div>
   </div>
 
 </div>
+
+<!-- WIN -->
 
 <div class="win" id="ws">
   <div class="trophy">🏆</div>
@@ -289,386 +322,274 @@ display:flex;align-items:center;justify-content:space-between;z-index:5;font-siz
 
 <script>
 // ═══════════════════════════════════════════════
-// VIDEO MANAGEMENT
+// SIGN DATA
 // ═══════════════════════════════════════════════
-
-// SignBSL MP4 direct links — pattern: media.signbsl.com/videos/bsl/[contributor]/[word].mp4
-// We try multiple contributor paths since the URL structure varies
-const VIDEO_SOURCES = {
-  hello: [
-    'https://media.signbsl.com/videos/bsl/signstation/hello.mp4',
-    'https://media.signbsl.com/videos/bsl/signbsl/hello.mp4',
-  ],
-  hay: [
-    'https://media.signbsl.com/videos/bsl/signstation/how-are-you.mp4',
-    'https://media.signbsl.com/videos/bsl/signstation/howareyou.mp4',
-    'https://media.signbsl.com/videos/bsl/signbsl/how-are-you.mp4',
-  ]
-};
-
-const FALLBACK_LINKS = {
-  hello: 'https://www.signbsl.com/sign/hello',
-  hay:   'https://www.signbsl.com/sign/how-are-you',
-};
-
-// Also — SignBSL has an official embed widget. We use that as the primary method
-// since direct MP4 may have CORS restrictions. The widget loads from embed.signbsl.com.
-// Video ref IDs found from their embed codes:
-// We'll use their official blockquote embed system inside an iframe srcdoc
-const SIGNBSL_EMBED = {
-  hello: `<blockquote class="signbsldata-embed" data-vidref="wqlzxgcxs6"><a href="https://www.signbsl.com/sign/hello">Hello in BSL</a></blockquote><script async src="https://embed.signbsl.com/widgets.js" charset="utf-8"><\/script>`,
-  hay:   `<blockquote class="signbsldata-embed" data-vidref="q2n2lkdmhm"><a href="https://www.signbsl.com/sign/how-are-you">How are you in BSL</a></blockquote><script async src="https://embed.signbsl.com/widgets.js" charset="utf-8"><\/script>`,
-};
-
-let currentVid = 'hello';
-let vidLoadTimeout = null;
-
-function switchVideo(name, tabEl) {
-  currentVid = name;
-  // Update tabs
-  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('on'));
-  if (tabEl) tabEl.classList.add('on');
-  else document.querySelectorAll('.vtab')[name === 'hello' ? 0 : 1].classList.add('on');
-  // Update fallback link
-  document.getElementById('fallbackLink').href = FALLBACK_LINKS[name];
-  document.getElementById('fallbackLink').textContent = name === 'hello' ? 'Watch Hello on SignBSL ↗' : 'Watch "How are you?" on SignBSL ↗';
-  loadVideo(name);
-}
-
-function loadVideo(name) {
-  const vid = document.getElementById('bslVid');
-  const loader = document.getElementById('vload');
-  const player = document.getElementById('vplayer');
-
-  player.classList.remove('failed');
-  loader.classList.remove('hidden');
-
-  // Try direct MP4 first
-  const sources = VIDEO_SOURCES[name];
-  let srcIndex = 0;
-
-  function tryNext() {
-    if (srcIndex >= sources.length) {
-      // All MP4s failed — try SignBSL embed widget via srcdoc iframe
-      tryEmbedWidget(name);
-      return;
-    }
-    vid.src = sources[srcIndex++];
-    vid.load();
-  }
-
-  vid.onerror = () => {
-    clearTimeout(vidLoadTimeout);
-    tryNext();
-  };
-
-  vid.oncanplay = () => {
-    clearTimeout(vidLoadTimeout);
-    loader.classList.add('hidden');
-    vid.play().catch(() => {});
-  };
-
-  // Timeout fallback if neither event fires in 4s
-  clearTimeout(vidLoadTimeout);
-  vidLoadTimeout = setTimeout(() => {
-    if (!vid.readyState >= 3) tryNext();
-  }, 4000);
-
-  tryNext();
-}
-
-function tryEmbedWidget(name) {
-  // Replace the video element with an iframe containing SignBSL's embed widget
-  const player = document.getElementById('vplayer');
-  const loader = document.getElementById('vload');
-  const vid = document.getElementById('bslVid');
-
-  // Create iframe with srcdoc containing the SignBSL widget
-  const html = `<!DOCTYPE html><html><head><style>body{margin:0;background:#000;display:flex;align-items:center;justify-content:center;min-height:180px} .signbsldata-embed{border:none!important;background:transparent}</style></head><body>${SIGNBSL_EMBED[name]}</body></html>`;
-
-const existing = player.querySelector(‘iframe.embedFrame’);
-if (existing) existing.remove();
-
-const iframe = document.createElement(‘iframe’);
-iframe.className = ‘embedFrame’;
-iframe.style.cssText = ‘width:100%;height:200px;border:0;display:block;background:#000’;
-iframe.srcdoc = html;
-iframe.onload = () => { loader.classList.add(‘hidden’); };
-setTimeout(() => { loader.classList.add(‘hidden’); }, 3000); // fallback hide loader
-
-vid.style.display = ‘none’;
-player.insertBefore(iframe, vid);
-
-iframe.onerror = () => {
-loader.classList.add(‘hidden’);
-player.classList.add(‘failed’);
-// Show fallback links
-};
-
-// If embed also fails after 6s, show the fallback links UI
-setTimeout(() => {
-if (iframe.contentDocument && iframe.contentDocument.body &&
-iframe.contentDocument.body.innerHTML.includes(‘signbsldata’)) {
-// Widget loaded OK
-} else {
-// Might have failed — show fallback just in case
-loader.classList.add(‘hidden’);
-}
-}, 6000);
-}
-
-function replayVid() {
-switchVideo(step === 0 ? ‘hello’ : ‘hay’, null);
-}
-
-// Load hello on startup
-window.addEventListener(‘load’, () => loadVideo(‘hello’));
+const SIGNS = [
+  {
+    word: 'Hello',
+    detect: 'wave',
+    youtube: 'https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=8s',
+    steps: [
+      '1. Raise your dominant hand to the <strong>side of your head</strong>',
+      '2. Open hand flat — all fingers together pointing up',
+      '3. Palm facing <strong>forward</strong> toward the person',
+      '4. Wave your wrist in one smooth arc — left then right',
+    ],
+    howtoLabel: 'How to sign: Hello',
+  },
+  {
+    word: 'How are you?',
+    detect: 'thumbsup',
+    youtube: 'https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=198s',
+    steps: [
+      '1. Make a <strong>closed fist</strong> with your dominant hand',
+      '2. Thumb pointing <strong>straight up</strong>',
+      '3. Hold at chest/chin height',
+      '4. <strong>Thrust it forward</strong> firmly toward the person',
+    ],
+    howtoLabel: 'How to sign: How are you?',
+  },
+];
 
 // ═══════════════════════════════════════════════
-// PRE-WRITTEN ARIA TUTOR MESSAGES
+// PRE-WRITTEN ARIA MESSAGES
 // ═══════════════════════════════════════════════
 const TUTOR = {
-hello: {
-intro: `Watch the video carefully! For <strong>BSL Hello</strong>:<br><br> 🖐️ Open your hand — all fingers together, pointing up<br> 📍 Raise it to the <em>side of your head</em> (near your temple)<br> 🌊 Palm facing <em>forward toward me</em><br> ↔️ Wave your wrist in one smooth arc<br><br> When ready, show me on your camera!`,
-
-```
-success: `Yes!! Perfect BSL Hello! 🎉 Open hand beside your head, palm forward, one smooth wave. Exactly right! Now let's try "How are you?"`,
-
-wrong: [
-  `Not quite! Make sure your hand is <strong>completely open</strong> — all 5 fingers spread out pointing upward. Then wave it beside your head with your palm facing me.`,
-
-  `Try again! Check these three things:<br>
-```
-
-• <strong>Palm facing toward me</strong> — not sideways or down<br>
-• Hand up near your <strong>temple / ear level</strong><br>
-• All fingers <strong>open and extended</strong>, not curled`,
-
-```
-  `Nearly there! Watch the video one more time — notice exactly where her hand is. It's beside her head, palm forward, fingers open, one sweeping left-right motion from the wrist.`,
-],
-
-hint: `💡 Tip: Think of a relaxed wave to a friend far away — hand up beside your head, palm facing them, one smooth sweep. Keep your arm fairly still, just the wrist moves!`,
-```
-
-},
-
-hay: {
-intro: `Great work! Now <strong>BSL "How are you?"</strong>:<br><br> ✊ Make a <em>closed fist</em> with your thumb pointing straight UP<br> 📍 Hold it at about chest / chin height<br> ➡️ <strong>Thrust it forward</strong> firmly toward the person<br> 😊 Raised eyebrows add the question!<br><br> Watch the video then show me that thumbs-up thrust!`,
-
-```
-success: `Amazing!! That's BSL "How are you?" — closed fist, thumb up, pushed forward confidently. You've signed the full phrase! 🌟🌟`,
-
-wrong: [
-  `Not quite! You need a clear <strong>thumbs-up shape</strong> — close ALL four fingers into your palm, thumb pointing straight up, then push your fist forward firmly toward the camera.`,
-
-  `Remember — it's a <strong>tight closed fist</strong>, not an open hand. Check:<br>
-```
-
-• All four fingers <strong>curled into your palm</strong><br>
-• Thumb pointing <strong>straight up</strong><br>
-• Then <strong>push forward</strong> in one confident move`,
-
-```
-  `Watch the video one more time — see how she makes a very clear thumbs-up and then pushes it directly forward? It's short and confident — not a wave or a wiggle. Try again!`,
-],
-
-hint: `💡 Tip: Make the biggest clearest thumbs-up you can — like you're saying "great job!" — then push that whole fist toward me. Bold and confident is the key!`,
-```
-
-},
+  wave: {
+    intro: `Now sign <strong>Hello</strong>! Open hand, palm facing me, beside your head — then wave your wrist. Watch the YouTube video first if you need a reminder! 👋`,
+    success: `Perfect BSL Hello! 🎉 Open hand beside your head, palm forward, smooth wrist wave. Spot on! Now let's do "How are you?"`,
+    wrong: [
+      `Not quite! Keep your hand <strong>completely open</strong> — all fingers spread and pointing up — beside your head with your palm facing me. Then wave the wrist.`,
+      `Try again! Three things to check:<br>• Palm facing <strong>toward me</strong> (not sideways)<br>• Hand at <strong>head/temple level</strong><br>• All fingers <strong>open and straight</strong>`,
+      `Nearly! Watch the YouTube video one more time — notice where her hand is. Beside the head, palm forward, fingers open, one sweeping wrist wave.`,
+    ],
+    hint: `💡 Think of waving to a friend across the street — hand up beside your head, palm out, one smooth left-right sweep from the wrist only!`,
+  },
+  thumbsup: {
+    intro: `Great! Now <strong>"How are you?"</strong> — closed fist, thumb pointing straight up, then thrust it forward firmly. You've got this! 🤙`,
+    success: `Amazing!! That's BSL "How are you?" — thumbs-up fist pushed forward confidently. You signed the full phrase! 🌟`,
+    wrong: [
+      `Not quite! You need a <strong>closed fist with thumb up</strong> — curl ALL four fingers into your palm, thumb pointing straight up, then push forward firmly.`,
+      `Remember — tight closed fist, thumb straight up, then one firm forward push. Check:<br>• All fingers <strong>curled in</strong><br>• Thumb pointing <strong>up</strong><br>• Push <strong>forward</strong>`,
+      `Watch the YouTube video at 3:18 — see how she makes a clear thumbs-up and pushes it directly forward? Short, firm, confident movement. Try again!`,
+    ],
+    hint: `💡 Make the biggest clearest thumbs-up you can — like saying "great!" — then push that fist forward toward the camera. Bold and confident!`,
+  },
 };
 
 let typingTO = null;
-function ariaMsg(text, type = ‘norm’) {
-const area = document.getElementById(‘msgs’);
-const dot = document.createElement(‘div’);
-dot.className = ‘typing’;
-dot.innerHTML = ‘<div class="tdot"></div><div class="tdot"></div><div class="tdot"></div>’;
-area.appendChild(dot);
-area.scrollTop = area.scrollHeight;
-clearTimeout(typingTO);
-typingTO = setTimeout(() => {
-area.removeChild(dot);
-const m = document.createElement(‘div’);
-m.className = `msg ${type}`;
-m.innerHTML = text;
-area.appendChild(m);
-while (area.children.length > 5) area.removeChild(area.firstChild);
-area.scrollTop = area.scrollHeight;
-}, 850);
+function ariaMsg(text, type='norm') {
+  const area = document.getElementById('msgs');
+  const dot = document.createElement('div');
+  dot.className = 'typing';
+  dot.innerHTML = '<div class="tdot"></div><div class="tdot"></div><div class="tdot"></div>';
+  area.appendChild(dot);
+  area.scrollTop = area.scrollHeight;
+  clearTimeout(typingTO);
+  typingTO = setTimeout(() => {
+    area.removeChild(dot);
+    const m = document.createElement('div');
+    m.className = `msg ${type}`;
+    m.innerHTML = text;
+    area.appendChild(m);
+    while (area.children.length > 5) area.removeChild(area.firstChild);
+    area.scrollTop = area.scrollHeight;
+  }, 850);
+}
+
+function updateHowTo(stepIdx) {
+  const s = SIGNS[stepIdx];
+  document.getElementById('howtoLabel').textContent = s.howtoLabel;
+  const stepsEl = document.getElementById('howtoSteps');
+  stepsEl.innerHTML = s.steps.map(st => `<div class="step">${st}</div>`).join('');
+  // Highlight the active preview card
+  document.querySelectorAll('.sign-preview').forEach((p,i)=>p.classList.toggle('active', i===stepIdx));
+  // Update Watch Again button link
+  document.getElementById('watchLink').href = s.youtube;
+}
+
+function watchAgain() {
+  window.open(SIGNS[step].youtube, '_blank');
 }
 
 // ═══════════════════════════════════════════════
 // MEDIAPIPE
 // ═══════════════════════════════════════════════
-let mpH = null, lastLM = null, detActive = false, holdCnt = 0;
-const HOLD = 22;
-let wrongTimer = null;
+let mpH=null, lastLM=null, detActive=false, holdCnt=0;
+const HOLD=22;
+let wrongTimer=null;
 
 async function startCam() {
-try {
-const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: ‘user’ } });
-const vid = document.getElementById(‘uv’);
-vid.srcObject = stream;
-document.getElementById(‘co’).classList.add(‘hidden’);
-document.getElementById(‘cd’).classList.add(‘on’);
-document.getElementById(‘so’).classList.add(‘on’);
-mpH = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-mpH.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.72, minTrackingConfidence: 0.65 });
-mpH.onResults(onHands);
-const cam = new Camera(vid, { onFrame: async () => { await mpH.send({ image: vid }); drawOv(); }, width: 640, height: 480 });
-cam.start();
-document.getElementById(‘dt’).className = ‘det-big idle’;
-document.getElementById(‘dt’).textContent = ‘Watching your hands…’;
-} catch(e) { alert(‘Camera access denied. Please allow camera permissions.’); }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { width:640, height:480, facingMode:'user' } });
+    const vid = document.getElementById('uv');
+    vid.srcObject = stream;
+    document.getElementById('co').classList.add('hidden');
+    document.getElementById('cd').classList.add('on');
+    document.getElementById('so').classList.add('on');
+    mpH = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+    mpH.setOptions({ maxNumHands:1, modelComplexity:1, minDetectionConfidence:0.72, minTrackingConfidence:0.65 });
+    mpH.onResults(onHands);
+    const cam = new Camera(vid, { onFrame: async () => { await mpH.send({ image:vid }); drawOv(); }, width:640, height:480 });
+    cam.start();
+    document.getElementById('dt').className = 'det-big idle';
+    document.getElementById('dt').textContent = 'Watching your hands…';
+  } catch(e) { alert('Camera access denied. Please allow camera permissions and try again.'); }
 }
 
 function onHands(res) {
-if (!detActive) return;
-if (!res.multiHandLandmarks || !res.multiHandLandmarks.length) {
-lastLM = null; holdCnt = 0; detUI(‘No hands visible’, 0); return;
-}
-const lm = res.multiHandLandmarks[0]; lastLM = lm;
-const { det, conf } = classify(lm, SIGNS[step].detect);
-detUI(det ? SIGNS[step].word : ‘Signing…’, conf);
-if (det && conf > 0.6) { holdCnt++; if (holdCnt >= HOLD) { holdCnt = 0; doCorrect(); } }
-else holdCnt = 0;
+  if (!detActive) return;
+  if (!res.multiHandLandmarks || !res.multiHandLandmarks.length) {
+    lastLM=null; holdCnt=0; detUI('No hands visible',0); return;
+  }
+  const lm = res.multiHandLandmarks[0]; lastLM = lm;
+  const { det, conf } = classify(lm, SIGNS[step].detect);
+  detUI(det ? SIGNS[step].word : 'Signing…', conf);
+  if (det && conf > 0.6) { holdCnt++; if (holdCnt>=HOLD) { holdCnt=0; doCorrect(); } }
+  else holdCnt = 0;
 }
 
 function classify(lm, type) {
-if (type === ‘wave’) {
-const iU = lm[8].y < lm[5].y - 0.04, mU = lm[12].y < lm[9].y - 0.04;
-const rU = lm[16].y < lm[13].y - 0.04, pU = lm[20].y < lm[17].y - 0.04;
-const tO = Math.abs(lm[4].x - lm[0].x) > 0.04;
-const raised = lm[0].y < 0.6;
-const ext = [iU, mU, rU, pU].filter(Boolean).length;
-return { det: ext >= 3 && tO, conf: Math.min((ext/4)*0.6 + (tO?0.2:0) + (raised?0.2:0), 1) };
-}
-if (type === ‘thumbsup’) {
-const tU = lm[4].y < lm[3].y - 0.04;
-const c = [lm[8].y>lm[5].y-0.01, lm[12].y>lm[9].y-0.01, lm[16].y>lm[13].y-0.01, lm[20].y>lm[17].y-0.01].filter(Boolean).length;
-return { det: tU && c >= 3, conf: (tU?0.5:0) + (c/4)*0.5 };
-}
-return { det: false, conf: 0 };
+  if (type === 'wave') {
+    const iU=lm[8].y<lm[5].y-0.04, mU=lm[12].y<lm[9].y-0.04;
+    const rU=lm[16].y<lm[13].y-0.04, pU=lm[20].y<lm[17].y-0.04;
+    const tO=Math.abs(lm[4].x-lm[0].x)>0.04;
+    const raised=lm[0].y<0.6;
+    const ext=[iU,mU,rU,pU].filter(Boolean).length;
+    return { det: ext>=3&&tO, conf: Math.min((ext/4)*0.6+(tO?0.2:0)+(raised?0.2:0),1) };
+  }
+  if (type === 'thumbsup') {
+    const tU=lm[4].y<lm[3].y-0.04;
+    const c=[lm[8].y>lm[5].y-0.01,lm[12].y>lm[9].y-0.01,lm[16].y>lm[13].y-0.01,lm[20].y>lm[17].y-0.01].filter(Boolean).length;
+    return { det: tU&&c>=3, conf: (tU?0.5:0)+(c/4)*0.5 };
+  }
+  return { det:false, conf:0 };
 }
 
 function drawOv() {
-const hc = document.getElementById(‘hcvs’), v = document.getElementById(‘uv’);
-hc.width = v.videoWidth||640; hc.height = v.videoHeight||480;
-const c = hc.getContext(‘2d’); c.clearRect(0,0,hc.width,hc.height);
-if (!lastLM) return;
-const W = hc.width, H = hc.height;
-[[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,11],[11,12],[0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20],[5,9],[9,13],[13,17]].forEach(([a,b])=>{
-c.beginPath(); c.moveTo((1-lastLM[a].x)*W, lastLM[a].y*H); c.lineTo((1-lastLM[b].x)*W, lastLM[b].y*H);
-c.strokeStyle=‘rgba(46,204,113,.8)’; c.lineWidth=2.5; c.stroke();
-});
-lastLM.forEach((p,i)=>{
-c.beginPath(); c.arc((1-p.x)*W, p.y*H, i?4:6, 0, Math.PI*2);
-c.fillStyle = i ? ‘rgba(100,180,255,.85)’ : ‘rgba(46,204,113,.95)’; c.fill();
-});
-if (holdCnt > 0 && lastLM[0]) {
-c.beginPath(); c.arc((1-lastLM[0].x)*W, lastLM[0].y*H, 26, -Math.PI/2, -Math.PI/2+(holdCnt/HOLD)*Math.PI*2);
-c.strokeStyle=‘rgba(46,204,113,.95)’; c.lineWidth=4; c.stroke();
-}
+  const hc=document.getElementById('hcvs'), v=document.getElementById('uv');
+  hc.width=v.videoWidth||640; hc.height=v.videoHeight||480;
+  const c=hc.getContext('2d'); c.clearRect(0,0,hc.width,hc.height);
+  if (!lastLM) return;
+  const W=hc.width, H=hc.height;
+  [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,11],[11,12],
+   [0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20],[5,9],[9,13],[13,17]].forEach(([a,b])=>{
+    c.beginPath(); c.moveTo((1-lastLM[a].x)*W,lastLM[a].y*H); c.lineTo((1-lastLM[b].x)*W,lastLM[b].y*H);
+    c.strokeStyle='rgba(46,204,113,.8)'; c.lineWidth=2.5; c.stroke();
+  });
+  lastLM.forEach((p,i)=>{
+    c.beginPath(); c.arc((1-p.x)*W,p.y*H,i?4:6,0,Math.PI*2);
+    c.fillStyle=i?'rgba(100,180,255,.85)':'rgba(46,204,113,.95)'; c.fill();
+  });
+  if (holdCnt>0&&lastLM[0]) {
+    c.beginPath();
+    c.arc((1-lastLM[0].x)*W,lastLM[0].y*H,26,-Math.PI/2,-Math.PI/2+(holdCnt/HOLD)*Math.PI*2);
+    c.strokeStyle='rgba(46,204,113,.95)'; c.lineWidth=4; c.stroke();
+  }
 }
 
 function detUI(label, conf) {
-document.getElementById(‘dt’).className = ‘det-big’; document.getElementById(‘dt’).textContent = label;
-document.getElementById(‘dc’).textContent = `Confidence: ${Math.round(conf*100)}%`;
-document.getElementById(‘cf’).style.width = `${conf*100}%`;
-document.getElementById(‘cf’).style.background = conf>0.6?‘var(–green)’:conf>0.3?‘var(–yellow)’:‘var(–red)’;
+  document.getElementById('dt').className='det-big'; document.getElementById('dt').textContent=label;
+  document.getElementById('dc').textContent=`Confidence: ${Math.round(conf*100)}%`;
+  document.getElementById('cf').style.width=`${conf*100}%`;
+  document.getElementById('cf').style.background=conf>0.6?'var(--green)':conf>0.3?'var(--yellow)':'var(--red)';
 }
 
 // ═══════════════════════════════════════════════
 // LESSON
 // ═══════════════════════════════════════════════
-const SIGNS = [
-{ word:‘Hello’,        detect:‘wave’,     tutor:‘hello’ },
-{ word:‘How are you?’, detect:‘thumbsup’, tutor:‘hay’   },
-];
 let step=0, att=0, corr=0, strk=0, started=false, wrongCnt=0;
 
 function startLesson() {
-started=true; step=0; wrongCnt=0;
-document.getElementById(‘sb’).disabled = true;
-document.getElementById(‘rb’).disabled = false;
-document.getElementById(‘gb’).disabled = false;
-updateChips(); beginStep();
+  started=true; step=0; wrongCnt=0;
+  document.getElementById('sb').disabled=true;
+  document.getElementById('rb').disabled=false;
+  document.getElementById('gb').disabled=false;
+  updateChips(); beginStep();
 }
 
 function beginStep() {
-wrongCnt = 0; resetDots();
-switchVideo(SIGNS[step].tutor, null);
-setTimeout(() => ariaMsg(TUTOR[SIGNS[step].tutor].intro, ‘norm’), 400);
-setTimeout(() => {
-detActive = true;
-document.getElementById(‘dt’).className = ‘det-big idle’;
-document.getElementById(‘dt’).textContent = ‘Watching your hands…’;
-}, 4200);
+  wrongCnt=0; resetDots();
+  updateHowTo(step);
+  setTimeout(()=>ariaMsg(TUTOR[SIGNS[step].detect].intro,'norm'),300);
+  setTimeout(()=>{
+    detActive=true;
+    document.getElementById('dt').className='det-big idle';
+    document.getElementById('dt').textContent='Watching your hands…';
+  },2500);
 }
 
 function doCorrect() {
-if (!started) return;
-detActive = false; att++; corr++; strk++;
-updateStats();
-document.getElementById(‘chip’+step).classList.remove(‘active’,‘bad’);
-document.getElementById(‘chip’+step).classList.add(‘ok’);
-ariaMsg(TUTOR[SIGNS[step].tutor].success, ‘good’);
-detUI(’✓ ’+SIGNS[step].word, 1);
-setTimeout(() => { step++; if (step >= SIGNS.length) showWin(); else { updateChips(); beginStep(); } }, 2500);
+  if (!started) return;
+  detActive=false; att++; corr++; strk++;
+  updateStats();
+  document.getElementById('chip'+step).classList.remove('active','bad');
+  document.getElementById('chip'+step).classList.add('ok');
+  ariaMsg(TUTOR[SIGNS[step].detect].success,'good');
+  detUI('✓ '+SIGNS[step].word,1);
+  setTimeout(()=>{ step++; if(step>=SIGNS.length) showWin(); else { updateChips(); beginStep(); } },2500);
 }
 
 function doWrong() {
-if (!started) return;
-detActive = false; att++; strk = 0; dotFail(); updateStats();
-document.getElementById(‘chip’+step).classList.add(‘bad’);
-const t = TUTOR[SIGNS[step].tutor];
-ariaMsg(wrongCnt < t.wrong.length ? t.wrong[wrongCnt] : t.hint, ‘bad’);
-wrongCnt++;
-setTimeout(() => {
-document.getElementById(‘chip’+step).classList.remove(‘bad’);
-document.getElementById(‘chip’+step).classList.add(‘active’);
-detActive = true;
-document.getElementById(‘dt’).className = ‘det-big idle’;
-document.getElementById(‘dt’).textContent = ‘Watching your hands…’;
-}, 3800);
+  if (!started) return;
+  detActive=false; att++; strk=0; dotFail(); updateStats();
+  document.getElementById('chip'+step).classList.add('bad');
+  const msgs = TUTOR[SIGNS[step].detect];
+  ariaMsg(wrongCnt<msgs.wrong.length ? msgs.wrong[wrongCnt] : msgs.hint, 'bad');
+  wrongCnt++;
+  setTimeout(()=>{
+    document.getElementById('chip'+step).classList.remove('bad');
+    document.getElementById('chip'+step).classList.add('active');
+    detActive=true;
+    document.getElementById('dt').className='det-big idle';
+    document.getElementById('dt').textContent='Watching your hands…';
+  },3800);
 }
 
-function gotIt() { if (started) doCorrect(); }
+function gotIt(){ if(started) doCorrect(); }
 
-function updateChips() {
-document.querySelectorAll(’.chip’).forEach((c,i) => {
-c.classList.remove(‘active’,‘ok’,‘bad’);
-if (i < step) c.classList.add(‘ok’);
-else if (i === step) c.classList.add(‘active’);
-});
-document.getElementById(‘pf’).style.width = `${(step/SIGNS.length)*100}%`;
-document.getElementById(‘slbl’).textContent = `Step ${step+1} of ${SIGNS.length}`;
+function updateChips(){
+  document.querySelectorAll('.chip').forEach((c,i)=>{
+    c.classList.remove('active','ok','bad');
+    if(i<step) c.classList.add('ok');
+    else if(i===step) c.classList.add('active');
+  });
+  document.getElementById('pf').style.width=`${(step/SIGNS.length)*100}%`;
+  document.getElementById('slbl').textContent=`Step ${step+1} of ${SIGNS.length}`;
 }
-function updateStats() { document.getElementById(‘sc’).textContent=corr; document.getElementById(‘sa’).textContent=att; document.getElementById(‘ss’).textContent=strk; }
-function resetDots() { document.querySelectorAll(’.pd’).forEach(d=>d.classList.remove(‘x’)); }
-function dotFail() { const ds=[…document.querySelectorAll(’.pd’)]; const u=ds.filter(d=>d.classList.contains(‘x’)).length; if(u<ds.length)ds[u].classList.add(‘x’); }
-function showWin() { document.getElementById(‘pf’).style.width=‘100%’; setTimeout(()=>document.getElementById(‘ws’).classList.add(‘show’),600); }
-function restart() {
-document.getElementById(‘ws’).classList.remove(‘show’);
-step=0;att=0;corr=0;strk=0;started=false;wrongCnt=0;
-document.getElementById(‘sb’).disabled=false; document.getElementById(‘rb’).disabled=true; document.getElementById(‘gb’).disabled=true;
-document.querySelectorAll(’.chip’).forEach(c=>c.classList.remove(‘active’,‘ok’,‘bad’));
-document.getElementById(‘pf’).style.width=‘0%’;
-document.getElementById(‘dt’).className=‘det-big idle’; document.getElementById(‘dt’).textContent=‘Enable camera to begin…’;
-updateStats(); resetDots();
-document.getElementById(‘msgs’).innerHTML=’’;
-ariaMsg(“Let’s go again! Watch the video, then show me your sign 💪”,‘norm’);
-switchVideo(‘hello’,null);
+function updateStats(){ document.getElementById('sc').textContent=corr; document.getElementById('sa').textContent=att; document.getElementById('ss').textContent=strk; }
+function resetDots(){ document.querySelectorAll('.pd').forEach(d=>d.classList.remove('x')); }
+function dotFail(){ const ds=[...document.querySelectorAll('.pd')]; const u=ds.filter(d=>d.classList.contains('x')).length; if(u<ds.length)ds[u].classList.add('x'); }
+function showWin(){ document.getElementById('pf').style.width='100%'; setTimeout(()=>document.getElementById('ws').classList.add('show'),600); }
+
+function restart(){
+  document.getElementById('ws').classList.remove('show');
+  step=0;att=0;corr=0;strk=0;started=false;wrongCnt=0;
+  document.getElementById('sb').disabled=false;
+  document.getElementById('rb').disabled=true;
+  document.getElementById('gb').disabled=true;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active','ok','bad'));
+  document.getElementById('pf').style.width='0%';
+  document.getElementById('dt').className='det-big idle';
+  document.getElementById('dt').textContent='Enable camera to begin…';
+  updateStats(); resetDots(); updateHowTo(0);
+  document.getElementById('msgs').innerHTML='';
+  ariaMsg("Let's go again! Watch the video, then show me your sign 💪",'norm');
 }
 
+// Add a hidden link for watchAgain to use
+const wl = document.createElement('a'); wl.id='watchLink'; wl.style.display='none'; document.body.appendChild(wl);
+
+// Auto-wrong timer
 setInterval(()=>{
-if (!detActive||!started||!lastLM) return;
-const {det} = classify(lastLM, SIGNS[step].detect);
-if (!det) { if (!wrongTimer) wrongTimer=setTimeout(()=>{ wrongTimer=null; if(!detActive||!lastLM)return; if(!classify(lastLM,SIGNS[step].detect).det) doWrong(); },5000); }
-else { clearTimeout(wrongTimer); wrongTimer=null; }
+  if(!detActive||!started||!lastLM)return;
+  if(!classify(lastLM,SIGNS[step].detect).det){
+    if(!wrongTimer)wrongTimer=setTimeout(()=>{ wrongTimer=null; if(!detActive||!lastLM)return; if(!classify(lastLM,SIGNS[step].detect).det)doWrong(); },5000);
+  }else{ clearTimeout(wrongTimer); wrongTimer=null; }
 },500);
+
+// Init
+updateHowTo(0);
 </script>
 
 </body>

@@ -400,7 +400,7 @@ function ariaMsg(text, type='norm') {
 // MEDIAPIPE
 // ═══════════════════════════════════════════
 let mpH=null, lastLM=[], detActive=false, holdCnt=0;
-const HOLD=10;
+const HOLD=6; // much faster confirm — about 0.5s at 12fps
 let wrongTimer=null;
 let processing=false; // prevent overlapping frames
 
@@ -461,13 +461,15 @@ function classify(hands,type){
   const lm=hands[0]; // primary hand
   const lm2=hands[1]||null; // second hand if present
   if(type==='salute'){
-    // Flat open hand raised high to head/temple level
-    const iU=lm[8].y<lm[5].y-0.04, mU=lm[12].y<lm[9].y-0.04;
-    const rU=lm[16].y<lm[13].y-0.04, pU=lm[20].y<lm[17].y-0.04;
-    const tO=Math.abs(lm[4].x-lm[0].x)>0.03;
-    const raised=lm[0].y<0.45;
+    // Flat open hand — fingers extended, hand at head level or above
+    const iU=lm[8].y<lm[5].y-0.03, mU=lm[12].y<lm[9].y-0.03;
+    const rU=lm[16].y<lm[13].y-0.03, pU=lm[20].y<lm[17].y-0.03;
+    const tO=Math.abs(lm[4].x-lm[0].x)>0.02;
+    // Hand raised — wrist in upper half of frame (more lenient than before)
+    const raised=lm[0].y<0.55;
     const ext=[iU,mU,rU,pU].filter(Boolean).length;
-    return{det:ext>=3&&tO&&raised,conf:Math.min((ext/4)*0.5+(tO?0.15:0)+(raised?0.35:0),1)};
+    // Only need 2 fingers extended + raised to count — catches the flick motion
+    return{det:ext>=2&&raised,conf:Math.min((ext/4)*0.55+(tO?0.15:0)+(raised?0.3:0),1)};
   }
   if(type==='chest_out'){
     // Both hands needed: check each hand for thumbs-up finish position
@@ -629,7 +631,7 @@ function restart(){
 setInterval(()=>{
   if(!detActive||!started||!lastLM||!lastLM.length)return;
   if(!classify(lastLM,SIGNS[step].detect).det){
-    if(!wrongTimer)wrongTimer=setTimeout(()=>{wrongTimer=null;if(!detActive||!lastLM||!lastLM.length)return;if(!classify(lastLM,SIGNS[step].detect).det)doWrong();},7000);
+    if(!wrongTimer)wrongTimer=setTimeout(()=>{wrongTimer=null;if(!detActive||!lastLM||!lastLM.length)return;if(!classify(lastLM,SIGNS[step].detect).det)doWrong();},5000);
   }else{clearTimeout(wrongTimer);wrongTimer=null;}
 },500);
 </script>

@@ -136,7 +136,7 @@ display:flex;align-items:center;justify-content:space-between;z-index:5;font-siz
 .cdot{width:6px;height:6px;border-radius:50%;background:var(–red);animation:bl 1s infinite}
 .cdot.on{background:var(–green)}
 #uv{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}
-#hcvs{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;transform:scaleX(-1)}
+#hcvs{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;}
 .cov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
 justify-content:center;background:rgba(18,15,30,.92);z-index:4;gap:.8rem}
 .cov.hidden{display:none}
@@ -463,18 +463,22 @@ function drawOv(){
   const c=hc.getContext('2d');c.clearRect(0,0,hc.width,hc.height);
   if(!lastLM)return;
   const W=hc.width,H=hc.height;
+  // Canvas is also CSS-flipped (scaleX -1) to match the mirrored video
+  // So we draw at p.x * W directly — both flip together = correct alignment
+  const px=p=>p.x*W, py=p=>p.y*H;
   [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,11],[11,12],
    [0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20],[5,9],[9,13],[13,17]].forEach(([a,b])=>{
-    c.beginPath();c.moveTo((1-lastLM[a].x)*W,lastLM[a].y*H);c.lineTo((1-lastLM[b].x)*W,lastLM[b].y*H);
-    c.strokeStyle='rgba(46,204,113,.8)';c.lineWidth=2.5;c.stroke();
+    c.beginPath();c.moveTo(px(lastLM[a]),py(lastLM[a]));c.lineTo(px(lastLM[b]),py(lastLM[b]));
+    c.strokeStyle='rgba(46,204,113,.9)';c.lineWidth=3;c.stroke();
   });
   lastLM.forEach((p,i)=>{
-    c.beginPath();c.arc((1-p.x)*W,p.y*H,i?4:6,0,Math.PI*2);
-    c.fillStyle=i?'rgba(100,180,255,.85)':'rgba(46,204,113,.95)';c.fill();
+    c.beginPath();c.arc(px(p),py(p),i?5:7,0,Math.PI*2);
+    c.fillStyle=i?'rgba(100,180,255,.9)':'rgba(46,204,113,1)';c.fill();
+    c.strokeStyle='rgba(255,255,255,.4)';c.lineWidth=1.5;c.stroke();
   });
   if(holdCnt>0&&lastLM[0]){
-    c.beginPath();c.arc((1-lastLM[0].x)*W,lastLM[0].y*H,26,-Math.PI/2,-Math.PI/2+(holdCnt/HOLD)*Math.PI*2);
-    c.strokeStyle='rgba(46,204,113,.95)';c.lineWidth=4;c.stroke();
+    c.beginPath();c.arc(px(lastLM[0]),py(lastLM[0]),30,-Math.PI/2,-Math.PI/2+(holdCnt/HOLD)*Math.PI*2);
+    c.strokeStyle='rgba(46,204,113,1)';c.lineWidth=5;c.stroke();
   }
 }
 

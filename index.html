@@ -296,7 +296,7 @@ html,body{height:auto;overflow:auto}
     <div class="card det-card">
       <div class="det-top">
         <span class="det-lbl">🖐 Hand Detection</span>
-        <span class="det-val idle" id="dt">Enable camera…</span>
+        <span class="det-val idle" id="dt">Enable camera...</span>
       </div>
       <div class="det-conf" id="dc">Confidence: —</div>
       <div class="cbar"><div class="cfill" id="cf"></div></div>
@@ -396,9 +396,9 @@ const TUTOR={
   },
   good_thumb:{
     intro:'Now sign <strong>Good</strong> in BSL! Make a clear thumbs up with your dominant hand, hold it at chest/chin level with palm facing sideways. 👍',
-    success:'Brilliant!! That\'s BSL Good — clean thumbs up at chest level. You\'re doing amazingly! 🌟',
+    success:'Brilliant!! That's BSL Good — clean thumbs up at chest level. You're doing amazingly! 🌟',
     wrong:['Not quite! Make a clear <strong>thumbs up</strong> — fist closed, thumb pointing straight up — and hold it at <strong>chest or chin height</strong>.','Remember: closed fist, thumb pointing <strong>straight up</strong>, palm facing to the <strong>side</strong>. Hold it steady and confident!','BSL Good is a solid thumbs up held confidently at chest level. Make sure all four fingers are curled into your palm!'],
-    hint:'💡 Bold confident thumbs up at chest height — like you\'re saying "great job!" to someone. Hold it steady!',
+    hint:'💡 Bold confident thumbs up at chest height — like you're saying "great job!" to someone. Hold it steady!',
   },
 };
 
@@ -437,7 +437,7 @@ async function startCam(){
     }
     vid.onloadeddata=()=>requestAnimationFrame(loop);
     document.getElementById('dt').className='det-val idle';
-    document.getElementById('dt').textContent='Watching your hands…';
+    document.getElementById('dt').textContent='Watching your hands...';
   }catch(e){alert('Camera access denied.');}
 }
 
@@ -446,7 +446,7 @@ function onHands(res){
   lastLM=res.multiHandLandmarks;
   if(!detActive)return;
   const{det,conf}=classify(lastLM,SIGNS[step].detect);
-  detUI(det?SIGNS[step].word:'Signing…',conf);
+  detUI(det?SIGNS[step].word:'Signing...',conf);
   if(det&&conf>0.5){holdCnt++;if(holdCnt>=HOLD){holdCnt=0;doCorrect();}}
   else holdCnt=0;
 }
@@ -606,7 +606,7 @@ function beginStep(){
   setTimeout(()=>ariaMsg(TUTOR[SIGNS[step].detect].intro,'norm'),300);
   setTimeout(()=>{lastLM=[];holdCnt=0;detActive=true;
     document.getElementById('dt').className='det-val idle';
-    document.getElementById('dt').textContent='Watching your hands…';
+    document.getElementById('dt').textContent='Watching your hands...';
   },2500);
 }
 function doCorrect(){
@@ -632,7 +632,7 @@ function doWrong(){
     document.getElementById('chip'+step).classList.add('active');
     detActive=true;
     document.getElementById('dt').className='det-val idle';
-    document.getElementById('dt').textContent='Watching your hands…';
+    document.getElementById('dt').textContent='Watching your hands...';
   },3800);
 }
 function gotIt(){if(started)doCorrect();}
@@ -655,7 +655,7 @@ function restart(){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active','ok','bad'));
   document.getElementById('pf').style.width='0%';
   document.getElementById('dt').className='det-val idle';
-  document.getElementById('dt').textContent='Watching your hands…';
+  document.getElementById('dt').textContent='Watching your hands...';
   document.getElementById('stepPill').textContent='Step 1 of 4';
   updateStats();resetDots();switchVid(0,null);
   ariaMsg("Let's go again! Watch the video, then show me your sign 💪",'norm');

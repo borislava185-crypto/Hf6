@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SignBot — BSL Tutor</title>
+<title>SignBot - BSL Tutor</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
@@ -19,7 +19,7 @@ html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;
   display:flex;flex-direction:column;}
 
-/* HEADER — compact */
+/* HEADER - compact */
 header{
 padding:.45rem 1.2rem;display:flex;align-items:center;justify-content:space-between;
 background:rgba(26,18,16,.98);border-bottom:2px solid rgba(255,140,66,.18);
@@ -30,7 +30,7 @@ flex-shrink:0;z-index:10;
 color:#f4c07a;padding:.25rem .9rem;border-radius:20px;font-weight:900;font-size:.8rem}
 .hright{font-size:.7rem;color:var(–muted);font-weight:800}
 
-/* MAIN — 3 equal columns, fills remaining height */
+/* MAIN - 3 equal columns, fills remaining height */
 .app{
 flex:1;display:grid;
 grid-template-columns:1fr 1fr 1fr;
@@ -85,7 +85,7 @@ border:2.5px solid rgba(255,140,66,.5)}
 @keyframes bl{0%,100%{opacity:1}50%{opacity:.35}}
 .alivtxt{font-size:.65rem;color:var(–orange);font-weight:800}
 
-/* Message — single big message, always visible */
+/* Message - single big message, always visible */
 .amsg-wrap{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
 .amsg{
 padding:.75rem .9rem;border-radius:12px;
@@ -163,7 +163,7 @@ pointer-events:none;z-index:4;display:none;animation:sg 2s ease-in-out infinite}
 .sov.on{display:block}
 @keyframes sg{0%,100%{border-color:rgba(255,140,66,.2)}50%{border-color:rgba(255,140,66,.75)}}
 
-/* Detection — compact, in middle column */
+/* Detection - compact, in middle column */
 .det-card{padding:.65rem .9rem;flex-shrink:0;border:1.5px solid rgba(255,140,66,.25)!important;}
 .det-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem}
 .det-lbl{font-size:.6rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(–muted)}
@@ -298,7 +298,7 @@ html,body{height:auto;overflow:auto}
         <span class="det-lbl">🖐 Hand Detection</span>
         <span class="det-val idle" id="dt">Enable camera...</span>
       </div>
-      <div class="det-conf" id="dc">Confidence: —</div>
+      <div class="det-conf" id="dc">Confidence: -</div>
       <div class="cbar"><div class="cfill" id="cf"></div></div>
     </div>
   </div>
@@ -331,14 +331,14 @@ const SIGNS=[
      {t:'Place <b>both flat hands</b> on your chest, palms facing inward'},
      {t:'Then make a <b>closed fist</b> with your dominant hand, <b>thumb pointing up</b>'},
      {t:'<b>Thrust your fist forward</b> firmly toward the person'},
-     {t:'🤨 Raise your eyebrows — that makes it a question in BSL!'},
+     {t:'🤨 Raise your eyebrows - that makes it a question in BSL!'},
    ]},
   {word:'Yes',detect:'yes_fist',video:'',youtube:'https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=0s',
    stepsLbl:'How to sign: Yes',
    steps:[
      {t:'Make a <b>closed fist</b> with your dominant hand'},
      {t:'Hold fist at about <b>chest height</b>'},
-     {t:'Move fist <b>up and down</b> — like your hand is nodding'},
+     {t:'Move fist <b>up and down</b> - like your hand is nodding'},
      {t:'😊 Nod your head slightly at the same time'},
    ]},
   {word:'Good',detect:'good_thumb',video:'',youtube:'https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=0s',
@@ -347,7 +347,7 @@ const SIGNS=[
      {t:'Make a clear <b>thumbs up</b> with your dominant hand'},
      {t:'Hold it at <b>chest / chin height</b>'},
      {t:'Palm facing <b>to the side</b> (not forward)'},
-     {t:'😊 Smile — <b>thumbs up = good</b> in BSL!'},
+     {t:'😊 Smile - <b>thumbs up = good</b> in BSL!'},
    ]},
 ];
 
@@ -361,7 +361,7 @@ function switchVid(idx,tabEl){
     vid.style.display='block';
     if(ytBtn)ytBtn.style.display='none';
   } else {
-    // No local video — show YouTube watch button instead
+    // No local video - show YouTube watch button instead
     vid.style.display='none';
     if(ytBtn){
       ytBtn.style.display='flex';
@@ -377,33 +377,34 @@ function replayVid(){const v=document.getElementById('bslVid');v.currentTime=0;v
 
 const TUTOR={
   salute:{
-    intro:'Watch the video then copy <strong>Hello</strong>! Flat open hand, bring to your forehead, quick salute-like flick outward. Add a smile! 👋',
-    success:'Perfect BSL Hello! 🎉 Flat hand, temple, quick outward flick — spot on! Now "How are you?"',
-    wrong:['Not quite! Flat open hand up to your <strong>forehead/temple</strong>, then flick it outward — like a quick salute.','Check: hand <strong>flat & open</strong>, start at your <strong>temple</strong>, flick <strong>outward quickly</strong>. Watch the video again!','Watch the video one more time — small, quick salute movement from the temple. Try again!'],
-    hint:'💡 Quick friendly salute — flat hand to temple, one clean flick outward. Smile and go!',
+    intro:"Watch the video then copy <strong>Hello</strong>! Flat open hand to your forehead, quick salute-like flick outward. Add a smile! 👋",
+    success:"Perfect BSL Hello! 🎉 Flat hand, temple, quick outward flick. Now try How are you?",
+    wrong:["Not quite! Flat open hand up to your <strong>forehead/temple</strong>, then flick it outward like a quick salute.","Check: hand <strong>flat and open</strong>, start at your <strong>temple</strong>, flick outward quickly. Watch the video again!","Watch the video one more time. Small quick salute movement from the temple. Try again!"],
+    hint:"💡 Quick friendly salute. Flat hand to temple, one clean flick outward. Smile and go!",
   },
   chest_out:{
-    intro:'Now <strong>"How are you?"</strong> — it is a two-part sign:<br>1️⃣ Place both flat hands on your chest<br>2️⃣ Then make a <strong>thumbs up fist and thrust it forward</strong><br>Raise your eyebrows for the question! 🤙',
-    success:'Amazing!! Perfect BSL "How are you?" — hands on chest then thumbs up thrust forward! 🌟',
-    wrong:['Not quite! It's two parts: first <strong>both flat hands on chest</strong>, then <strong>closed fist thumb up pushed forward</strong>. Try doing both parts!','Remember the sequence: 1) flat hands on chest → 2) thumbs up fist → 3) thrust forward. And raise those eyebrows!','Watch the video one more time — both hands flat on chest first, THEN form a thumbs up and push it out toward me.'],
-    hint:'💡 Two steps: flat hands touch your chest first, then switch to a thumbs up and push it forward confidently. Eyebrows up = question!',
+    intro:"Now <strong>How are you?</strong> Two-part sign:<br>1. Both flat hands on your chest<br>2. Closed fist, thumb up, thrust forward<br>Raise your eyebrows for the question! 🤙",
+    success:"Amazing!! Perfect BSL How are you? Hands on chest then thumbs up thrust forward! 🌟",
+    wrong:["Not quite! Two parts: <strong>both flat hands on chest</strong> first, then <strong>closed fist thumb up pushed forward</strong>.","Remember: 1) flat hands on chest 2) thumbs up fist 3) thrust forward. Raise those eyebrows!","Watch the video again. Both hands flat on chest first, THEN thumbs up pushed out toward me."],
+    hint:"💡 Flat hands on chest first, then thumbs up fist pushed forward. Eyebrows up means question in BSL!",
   },
   yes_fist:{
-    intro:'Now sign <strong>Yes</strong> in BSL! Make a closed fist, hold it at chest height, and bob it up and down — like your hand is nodding. ✊',
-    success:'Yes!! Perfect BSL Yes — fist nodding up and down. Great work! 🎉',
-    wrong:['Not quite! Make a tight <strong>closed fist</strong> (no fingers out), hold at chest, then <strong>bob it up and down</strong> like a nod.','Check: all fingers <strong>curled into a fist</strong>, no thumb sticking up — then nod the fist. BSL Yes is a fist nod, not a thumbs up!','Keep your fist firm and move it up and down in a small nod motion. Practice slowly then speed it up!'],
-    hint:'💡 Think of nodding your head — but do it with your fist instead! Small, clear up-down movement at chest height.',
+    intro:"Now sign <strong>Yes</strong> in BSL! Make a closed fist at chest height and bob it up and down like your hand is nodding. ✊",
+    success:"Yes!! Perfect BSL Yes. Fist nodding up and down. Great work! 🎉",
+    wrong:["Not quite! Make a tight <strong>closed fist</strong> with no fingers out, hold at chest, then <strong>bob it up and down</strong> like a nod.","Check: all fingers <strong>curled into a fist</strong>, no thumb sticking up, then nod the fist. BSL Yes is a fist nod not a thumbs up!","Keep your fist firm and move it up and down in a small nod motion. Practice slowly then speed it up!"],
+    hint:"💡 Think of nodding your head but do it with your fist! Small clear up-down movement at chest height.",
   },
   good_thumb:{
-    intro:'Now sign <strong>Good</strong> in BSL! Make a clear thumbs up with your dominant hand, hold it at chest/chin level with palm facing sideways. 👍',
-    success:'Brilliant!! That's BSL Good — clean thumbs up at chest level. You're doing amazingly! 🌟',
-    wrong:['Not quite! Make a clear <strong>thumbs up</strong> — fist closed, thumb pointing straight up — and hold it at <strong>chest or chin height</strong>.','Remember: closed fist, thumb pointing <strong>straight up</strong>, palm facing to the <strong>side</strong>. Hold it steady and confident!','BSL Good is a solid thumbs up held confidently at chest level. Make sure all four fingers are curled into your palm!'],
-    hint:'💡 Bold confident thumbs up at chest height — like you're saying "great job!" to someone. Hold it steady!',
+    intro:"Now sign <strong>Good</strong> in BSL! Make a clear thumbs up, hold it at chest or chin level with palm facing sideways. 👍",
+    success:"Brilliant!! That is BSL Good. Clean thumbs up at chest level. You are doing amazingly! 🌟",
+    wrong:["Not quite! Make a clear <strong>thumbs up</strong>, fist closed, thumb pointing straight up, and hold it at <strong>chest or chin height</strong>.","Closed fist, thumb pointing <strong>straight up</strong>, palm facing to the <strong>side</strong>. Hold it steady!","BSL Good is a solid thumbs up held at chest level. Make sure all four fingers are curled into your palm!"],
+    hint:"💡 Bold confident thumbs up at chest height like saying great job to someone. Hold it steady!",
   },
-};
+}
 
 let typTO=null;
-function ariaMsg(text,type='norm'){
+function ariaMsg(text,type){
+  if(!type)type="norm";
   const el=document.getElementById('ariaMsg');
   el.style.opacity='0';
   clearTimeout(typTO);
@@ -477,7 +478,7 @@ function classify(hands,type){
     return { det: tU && curled >= 3 && midHeight, conf: Math.min(conf,1) };
   }
   // BSL YES: closed fist (no thumb up, no fingers extended) at mid height
-  // Distinct from Good (thumbs up) — all fingers AND thumb curled in
+  // Distinct from Good (thumbs up) - all fingers AND thumb curled in
   if(type==='yes_fist'){
     // BSL Yes: closed fist (thumb NOT pointing up), bobbed up and down
     // Key distinction from Good: thumb tip must NOT be above the thumb base
@@ -486,14 +487,14 @@ function classify(hands,type){
     const rC=lm[16].y>lm[13].y-0.01;
     const pC=lm[20].y>lm[17].y-0.01;
     const curled=[iC,mC,rC,pC].filter(Boolean).length;
-    // Thumb must NOT be sticking up — tip stays close to or below IP joint
+    // Thumb must NOT be sticking up - tip stays close to or below IP joint
     const thumbDown = lm[4].y >= lm[3].y - 0.03;
     // Thumb tucked across fingers (x position close to middle of hand)
     const thumbTucked = Math.abs(lm[4].x - lm[9].x) < 0.15;
     const conf = Math.min((curled/4)*0.65 + (thumbDown?0.25:0) + (thumbTucked?0.1:0), 1);
     return { det: curled >= 3 && thumbDown, conf };
   }
-  // BSL GOOD: thumbs up — closed fist with thumb pointing UP
+  // BSL GOOD: thumbs up - closed fist with thumb pointing UP
   // Thumb tip clearly above thumb IP joint
   if(type==='good_thumb'){
     const tU=lm[4].y<lm[3].y-0.05;
@@ -658,7 +659,7 @@ function restart(){
   document.getElementById('dt').textContent='Watching your hands...';
   document.getElementById('stepPill').textContent='Step 1 of 4';
   updateStats();resetDots();switchVid(0,null);
-  ariaMsg("Let's go again! Watch the video, then show me your sign 💪",'norm');
+  ariaMsg("Go again! Watch the video then show me your sign 💪","norm");
 }
 setInterval(()=>{
   if(!detActive||!started||!lastLM||!lastLM.length)return;

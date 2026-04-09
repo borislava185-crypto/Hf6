@@ -386,7 +386,7 @@ async function startCam(){
     document.getElementById('cd').classList.add('on');
     document.getElementById('so').classList.add('on');
     mpH=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-    mpH.setOptions({maxNumHands:1,modelComplexity:1,minDetectionConfidence:0.7,minTrackingConfidence:0.65});
+    mpH.setOptions({maxNumHands:2,modelComplexity:1,minDetectionConfidence:0.7,minTrackingConfidence:0.65});
     mpH.onResults(onHands);
     async function loop(){
       if(!processing&&vid.readyState===4){processing=true;try{await mpH.send({image:vid});}catch(e){}processing=false;}

@@ -198,7 +198,7 @@ html,body{height:auto;overflow:auto}
 
 <header>
   <div class="logo">Sign<span>Bot</span> <span style="font-size:.7rem;color:var(--muted);font-weight:700;margin-left:.3rem">BSL Tutor</span></div>
-  <div class="step-pill" id="stepPill">Step 1 of 2</div>
+  <div class="step-pill" id="stepPill">Step 1 of 4</div>
   <div class="hright">🇬🇧 British Sign Language</div>
 </header>
 
@@ -253,7 +253,7 @@ html,body{height:auto;overflow:auto}
   <div class="chip" id="chip0" onclick="switchVid(0,null)"><div class="cnum">1</div><span>Hello</span></div>
   <div class="chip" id="chip1" onclick="switchVid(1,null)"><div class="cnum">2</div><span>How are you?</span></div>
   <div class="pbar"><div class="pfill" id="pf"></div></div>
-  <div class="prow"><span id="slbl">Step 1 of 2</span><div class="pdots"><div class="pd" id="pd0"></div><div class="pd" id="pd1"></div><div class="pd" id="pd2"></div></div></div>
+  <div class="prow"><span id="slbl">Step 1 of 4</span><div class="pdots"><div class="pd" id="pd0"></div><div class="pd" id="pd1"></div><div class="pd" id="pd2"></div></div></div>
 </div>
 
 <!-- BUTTONS -->
@@ -331,13 +331,41 @@ const SIGNS=[
      {t:'Finish with both hands in a <b>thumbs-up position</b>'},
      {t:'🤨 Raise eyebrows and <b>tilt head forward</b>'},
    ]},
+  {word:'Yes',detect:'yes_fist',video:'',youtube:'https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=0s',
+   stepsLbl:'How to sign: Yes',
+   steps:[
+     {t:'Make a <b>closed fist</b> with your dominant hand'},
+     {t:'Hold fist at about <b>chest height</b>'},
+     {t:'Move fist <b>up and down</b> — like your hand is nodding'},
+     {t:'😊 Nod your head slightly at the same time'},
+   ]},
+  {word:'Good',detect:'good_thumb',video:'',youtube:'https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=0s',
+   stepsLbl:'How to sign: Good',
+   steps:[
+     {t:'Make a clear <b>thumbs up</b> with your dominant hand'},
+     {t:'Hold it at <b>chest / chin height</b>'},
+     {t:'Palm facing <b>to the side</b> (not forward)'},
+     {t:'😊 Smile — <b>thumbs up = good</b> in BSL!'},
+   ]},
 ];
 
 function switchVid(idx,tabEl){
   const s=SIGNS[idx];
   const vid=document.getElementById('bslVid');
-  document.getElementById('bslSrc').src=s.video;
-  vid.load();vid.play().catch(()=>{});
+  const ytBtn=document.getElementById('ytBtn');
+  if(s.video){
+    document.getElementById('bslSrc').src=s.video;
+    vid.load();vid.play().catch(()=>{});
+    vid.style.display='block';
+    if(ytBtn)ytBtn.style.display='none';
+  } else {
+    // No local video — show YouTube watch button instead
+    vid.style.display='none';
+    if(ytBtn){
+      ytBtn.style.display='flex';
+      ytBtn.href=s.youtube||'https://www.youtube.com/watch?v=Iz3h3B5jBz8';
+    }
+  }
   document.getElementById('stepsLbl').textContent=s.stepsLbl;
   document.getElementById('stepsBody').innerHTML=s.steps.map((st,i)=>
     `<div class="step-row"><div class="snum">${i+1}</div><div class="stxt">${st.t}</div></div>`).join('');
@@ -357,6 +385,18 @@ const TUTOR={
     success:'Amazing!! BSL "How are you?" nailed — chest sweep to thumbs up! Full phrase signed! 🌟',
     wrong:['Not quite! <strong>Both flat hands on chest</strong>, then slide upward and outward, finish in a thumbs-up.','Remember: <strong>both hands flat on chest</strong> → slide up & out → <strong>thumbs up</strong> with raised eyebrows!','Watch the video — both hands chest, sweep outward, thumbs up. Eyebrow raise = question in BSL!'],
     hint:'💡 Two hands on chest → sweep up and out → thumbs up. Raise those eyebrows — that\'s the question!',
+  },
+  yes_fist:{
+    intro:'Now sign <strong>Yes</strong> in BSL! Make a closed fist, hold it at chest height, and bob it up and down — like your hand is nodding. ✊',
+    success:'Yes!! Perfect BSL Yes — fist nodding up and down. Great work! 🎉',
+    wrong:['Not quite! Make a tight <strong>closed fist</strong> (no fingers out), hold at chest, then <strong>bob it up and down</strong> like a nod.','Check: all fingers <strong>curled into a fist</strong>, no thumb sticking up — then nod the fist. BSL Yes is a fist nod, not a thumbs up!','Keep your fist firm and move it up and down in a small nod motion. Practice slowly then speed it up!'],
+    hint:'💡 Think of nodding your head — but do it with your fist instead! Small, clear up-down movement at chest height.',
+  },
+  good_thumb:{
+    intro:'Now sign <strong>Good</strong> in BSL! Make a clear thumbs up with your dominant hand, hold it at chest/chin level with palm facing sideways. 👍',
+    success:'Brilliant!! That\'s BSL Good — clean thumbs up at chest level. You\'re doing amazingly! 🌟',
+    wrong:['Not quite! Make a clear <strong>thumbs up</strong> — fist closed, thumb pointing straight up — and hold it at <strong>chest or chin height</strong>.','Remember: closed fist, thumb pointing <strong>straight up</strong>, palm facing to the <strong>side</strong>. Hold it steady and confident!','BSL Good is a solid thumbs up held confidently at chest level. Make sure all four fingers are curled into your palm!'],
+    hint:'💡 Bold confident thumbs up at chest height — like you\'re saying "great job!" to someone. Hold it steady!',
   },
 };
 
@@ -423,6 +463,34 @@ function classify(hands,type){
     const h1=tu(lm);
     if(lm2){const h2=tu(lm2);return{det:h1.up&&h2.up,conf:Math.min((h1.conf+h2.conf)/2+(h1.up&&h2.up?0.15:0),1)};}
     return{det:h1.up,conf:Math.min(h1.conf+0.1,1)};
+  }
+  // BSL YES: closed fist (no thumb up, no fingers extended) at mid height
+  // Distinct from Good (thumbs up) — all fingers AND thumb curled in
+  if(type==='yes_fist'){
+    // All 4 fingers curled
+    const iC=lm[8].y>lm[5].y-0.01;
+    const mC=lm[12].y>lm[9].y-0.01;
+    const rC=lm[16].y>lm[13].y-0.01;
+    const pC=lm[20].y>lm[17].y-0.01;
+    // Thumb NOT prominently up (tip should be near or below index MCP)
+    const thumbNotUp=lm[4].y>lm[5].y-0.04;
+    // Thumb also curled in (close to palm — thumb tip near index base)
+    const thumbIn=Math.abs(lm[4].x-lm[5].x)<0.12&&Math.abs(lm[4].y-lm[5].y)<0.12;
+    const curled=[iC,mC,rC,pC].filter(Boolean).length;
+    const conf=Math.min((curled/4)*0.6+(thumbNotUp?0.2:0)+(thumbIn?0.2:0),1);
+    return{det:curled>=3&&thumbNotUp,conf};
+  }
+  // BSL GOOD: thumbs up — closed fist with thumb pointing UP
+  // Thumb tip clearly above thumb IP joint
+  if(type==='good_thumb'){
+    const tU=lm[4].y<lm[3].y-0.05;
+    const iC=lm[8].y>lm[5].y-0.01;
+    const mC=lm[12].y>lm[9].y-0.01;
+    const rC=lm[16].y>lm[13].y-0.01;
+    const pC=lm[20].y>lm[17].y-0.01;
+    const curled=[iC,mC,rC,pC].filter(Boolean).length;
+    const conf=(tU?0.55:0)+(curled/4)*0.45;
+    return{det:tU&&curled>=3,conf:Math.min(conf,1)};
   }
   return{det:false,conf:0};
 }
@@ -575,7 +643,7 @@ function restart(){
   document.getElementById('pf').style.width='0%';
   document.getElementById('dt').className='det-val idle';
   document.getElementById('dt').textContent='Watching your hands…';
-  document.getElementById('stepPill').textContent='Step 1 of 2';
+  document.getElementById('stepPill').textContent='Step 1 of 4';
   updateStats();resetDots();switchVid(0,null);
   ariaMsg("Let's go again! Watch the video, then show me your sign 💪",'norm');
 }

@@ -252,8 +252,10 @@ html,body{height:auto;overflow:auto}
 <div class="card chips-card">
   <div class="chip" id="chip0" onclick="switchVid(0,null)"><div class="cnum">1</div><span>Hello</span></div>
   <div class="chip" id="chip1" onclick="switchVid(1,null)"><div class="cnum">2</div><span>How are you?</span></div>
+  <div class="chip" id="chip2" onclick="switchVid(2,null)"><div class="cnum">3</div><span>Yes</span></div>
+  <div class="chip" id="chip3" onclick="switchVid(3,null)"><div class="cnum">4</div><span>Good</span></div>
   <div class="pbar"><div class="pfill" id="pf"></div></div>
-  <div class="prow"><span id="slbl">Step 1 of 4</span><div class="pdots"><div class="pd" id="pd0"></div><div class="pd" id="pd1"></div><div class="pd" id="pd2"></div></div></div>
+  <div class="prow"><span id="slbl">Step 1 of 4</span><div class="pdots"><div class="pd" id="pd0"></div><div class="pd" id="pd1"></div><div class="pd" id="pd2"></div><div class="pd" id="pd3"></div></div></div>
 </div>
 
 <!-- BUTTONS -->
@@ -326,10 +328,10 @@ const SIGNS=[
   {word:'How are you?',detect:'chest_out',video:'ScreenRecording_04-06-2026 15-06-37_1.mov',
    stepsLbl:'How to sign: How are you?',
    steps:[
-     {t:'Place <b>both flat hands</b> on your chest, palms facing you'},
-     {t:'Slide fingertips <b>upward then outward</b>'},
-     {t:'Finish with both hands in a <b>thumbs-up position</b>'},
-     {t:'🤨 Raise eyebrows and <b>tilt head forward</b>'},
+     {t:'Place <b>both flat hands</b> on your chest, palms facing inward'},
+     {t:'Then make a <b>closed fist</b> with your dominant hand, <b>thumb pointing up</b>'},
+     {t:'<b>Thrust your fist forward</b> firmly toward the person'},
+     {t:'🤨 Raise your eyebrows — that makes it a question in BSL!'},
    ]},
   {word:'Yes',detect:'yes_fist',video:'',youtube:'https://www.youtube.com/watch?v=Iz3h3B5jBz8&t=0s',
    stepsLbl:'How to sign: Yes',
@@ -381,10 +383,10 @@ const TUTOR={
     hint:'💡 Quick friendly salute — flat hand to temple, one clean flick outward. Smile and go!',
   },
   chest_out:{
-    intro:'Now <strong>"How are you?"</strong> — both flat hands on chest, slide upward then outward, finish thumbs up. Raise your eyebrows! 🤙',
-    success:'Amazing!! BSL "How are you?" nailed — chest sweep to thumbs up! Full phrase signed! 🌟',
-    wrong:['Not quite! <strong>Both flat hands on chest</strong>, then slide upward and outward, finish in a thumbs-up.','Remember: <strong>both hands flat on chest</strong> → slide up & out → <strong>thumbs up</strong> with raised eyebrows!','Watch the video — both hands chest, sweep outward, thumbs up. Eyebrow raise = question in BSL!'],
-    hint:'💡 Two hands on chest → sweep up and out → thumbs up. Raise those eyebrows — that\'s the question!',
+    intro:'Now <strong>"How are you?"</strong> — it is a two-part sign:<br>1️⃣ Place both flat hands on your chest<br>2️⃣ Then make a <strong>thumbs up fist and thrust it forward</strong><br>Raise your eyebrows for the question! 🤙',
+    success:'Amazing!! Perfect BSL "How are you?" — hands on chest then thumbs up thrust forward! 🌟',
+    wrong:['Not quite! It's two parts: first <strong>both flat hands on chest</strong>, then <strong>closed fist thumb up pushed forward</strong>. Try doing both parts!','Remember the sequence: 1) flat hands on chest → 2) thumbs up fist → 3) thrust forward. And raise those eyebrows!','Watch the video one more time — both hands flat on chest first, THEN form a thumbs up and push it out toward me.'],
+    hint:'💡 Two steps: flat hands touch your chest first, then switch to a thumbs up and push it forward confidently. Eyebrows up = question!',
   },
   yes_fist:{
     intro:'Now sign <strong>Yes</strong> in BSL! Make a closed fist, hold it at chest height, and bob it up and down — like your hand is nodding. ✊',
@@ -459,26 +461,37 @@ function classify(hands,type){
     return{det:ext>=2&&raised,conf:Math.min((ext/4)*0.55+(tO?0.15:0)+(raised?0.3:0),1)};
   }
   if(type==='chest_out'){
-    const tu=h=>{const tU=h[4].y<h[3].y-0.03;const c=[h[8].y>h[5].y-0.01,h[12].y>h[9].y-0.01,h[16].y>h[13].y-0.01,h[20].y>h[17].y-0.01].filter(Boolean).length;return{up:tU&&c>=3,conf:(tU?0.45:0)+(c/4)*0.4};};
-    const h1=tu(lm);
-    if(lm2){const h2=tu(lm2);return{det:h1.up&&h2.up,conf:Math.min((h1.conf+h2.conf)/2+(h1.up&&h2.up?0.15:0),1)};}
-    return{det:h1.up,conf:Math.min(h1.conf+0.1,1)};
+    // BSL How are you: flat hands on chest THEN thumbs up fist thrust forward
+    // We detect the final clear thumbs-up position (the part cameras can reliably see)
+    // Thumb tip clearly above thumb IP joint = pointing up
+    const tU = lm[4].y < lm[3].y - 0.05;
+    // All 4 fingers curled into fist
+    const iC = lm[8].y > lm[5].y - 0.01;
+    const mC = lm[12].y > lm[9].y - 0.01;
+    const rC = lm[16].y > lm[13].y - 0.01;
+    const pC = lm[20].y > lm[17].y - 0.01;
+    const curled = [iC,mC,rC,pC].filter(Boolean).length;
+    // Hand should be at roughly chest/chin level (not raised high like Hello)
+    const midHeight = lm[0].y > 0.25 && lm[0].y < 0.85;
+    const conf = (tU?0.5:0) + (curled/4)*0.35 + (midHeight?0.15:0);
+    return { det: tU && curled >= 3 && midHeight, conf: Math.min(conf,1) };
   }
   // BSL YES: closed fist (no thumb up, no fingers extended) at mid height
   // Distinct from Good (thumbs up) — all fingers AND thumb curled in
   if(type==='yes_fist'){
-    // All 4 fingers curled
+    // BSL Yes: closed fist (thumb NOT pointing up), bobbed up and down
+    // Key distinction from Good: thumb tip must NOT be above the thumb base
     const iC=lm[8].y>lm[5].y-0.01;
     const mC=lm[12].y>lm[9].y-0.01;
     const rC=lm[16].y>lm[13].y-0.01;
     const pC=lm[20].y>lm[17].y-0.01;
-    // Thumb NOT prominently up (tip should be near or below index MCP)
-    const thumbNotUp=lm[4].y>lm[5].y-0.04;
-    // Thumb also curled in (close to palm — thumb tip near index base)
-    const thumbIn=Math.abs(lm[4].x-lm[5].x)<0.12&&Math.abs(lm[4].y-lm[5].y)<0.12;
     const curled=[iC,mC,rC,pC].filter(Boolean).length;
-    const conf=Math.min((curled/4)*0.6+(thumbNotUp?0.2:0)+(thumbIn?0.2:0),1);
-    return{det:curled>=3&&thumbNotUp,conf};
+    // Thumb must NOT be sticking up — tip stays close to or below IP joint
+    const thumbDown = lm[4].y >= lm[3].y - 0.03;
+    // Thumb tucked across fingers (x position close to middle of hand)
+    const thumbTucked = Math.abs(lm[4].x - lm[9].x) < 0.15;
+    const conf = Math.min((curled/4)*0.65 + (thumbDown?0.25:0) + (thumbTucked?0.1:0), 1);
+    return { det: curled >= 3 && thumbDown, conf };
   }
   // BSL GOOD: thumbs up — closed fist with thumb pointing UP
   // Thumb tip clearly above thumb IP joint
